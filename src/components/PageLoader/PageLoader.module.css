@@ -1,0 +1,138 @@
+.loaderContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #0A0A0F;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+}
+
+.loaderContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+}
+
+.circularScanner {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 245, 255, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: rotateGlow 3s linear infinite;
+  box-shadow: 0 0 20px rgba(0, 245, 255, 0.05);
+}
+
+.innerGlow {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border-radius: 50%;
+  border: 1px dashed var(--accent-cyan);
+  box-shadow: inset 0 0 15px rgba(0, 245, 255, 0.1);
+}
+
+.progressPercentage {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--accent-cyan);
+  text-shadow: var(--neon-shadow-cyan);
+  z-index: 2;
+}
+
+@keyframes rotateGlow {
+  0% { transform: rotate(0deg); border-color: rgba(0, 245, 255, 0.2); }
+  50% { border-color: rgba(139, 92, 246, 0.6); }
+  100% { transform: rotate(360deg); border-color: rgba(0, 245, 255, 0.2); }
+}
+
+.terminalBox {
+  width: 100%;
+  background: rgba(17, 24, 39, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.terminalHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--text-muted);
+}
+
+.dot:nth-child(1) { background-color: #FF5F56; }
+.dot:nth-child(2) { background-color: #FFBD2E; }
+.dot:nth-child(3) { background-color: #27C93F; }
+
+.terminalTitle {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-left: 10px;
+}
+
+.terminalBody {
+  padding: 20px;
+  min-height: 200px;
+  max-height: 250px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.logLine {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-white);
+  line-height: 1.4;
+  letter-spacing: 1px;
+}
+
+.prompt {
+  color: var(--accent-cyan);
+  margin-right: 8px;
+}
+
+.cursorBlink {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.8rem;
+  color: var(--accent-pink);
+  animation: blinkPrompt 1s infinite step-end;
+  letter-spacing: 1px;
+}
+
+@keyframes blinkPrompt {
+  from, to { opacity: 0.2 }
+  50% { opacity: 1 }
+}

@@ -1,0 +1,435 @@
+.navbarContainer {
+  position: fixed;
+  top: 25px;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.dock {
+  background: rgba(10, 10, 15, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 245, 255, 0.15); /* Cyan neon border */
+  border-radius: 40px;
+  padding: 10px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 
+              0 0 20px rgba(0, 245, 255, 0.05),
+              inset 0 0 12px rgba(0, 245, 255, 0.03);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: borderGlow 6s ease-in-out infinite alternate;
+}
+
+@keyframes borderGlow {
+  0% {
+    border-color: rgba(0, 245, 255, 0.15);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0, 245, 255, 0.05);
+  }
+  100% {
+    border-color: rgba(255, 77, 141, 0.15);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 77, 141, 0.05);
+  }
+}
+
+/* Corner trim details for cyberpunk console layout */
+.cornerTrim {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: var(--accent-cyan);
+  border-style: solid;
+  pointer-events: none;
+  opacity: 0.7;
+  transition: all 0.3s ease;
+}
+
+.topLeft {
+  top: 6px;
+  left: 6px;
+  border-width: 2px 0 0 2px;
+}
+
+.topRight {
+  top: 6px;
+  right: 6px;
+  border-width: 2px 2px 0 0;
+}
+
+.bottomLeft {
+  bottom: 6px;
+  left: 6px;
+  border-width: 0 0 2px 2px;
+}
+
+.bottomRight {
+  bottom: 6px;
+  right: 6px;
+  border-width: 0 2px 2px 0;
+}
+
+/* On hover, corner trims glow brighter */
+.dock:hover .cornerTrim {
+  opacity: 1;
+  border-color: var(--accent-pink);
+  filter: drop-shadow(0 0 3px var(--accent-pink));
+}
+
+.logo {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: var(--text-white);
+  cursor: none !important;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.logo:hover {
+  text-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.logoDot {
+  color: var(--accent-pink);
+  text-shadow: var(--neon-shadow-pink);
+}
+
+.navMenu {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.navItem {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  letter-spacing: 1.5px;
+  position: relative;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: none !important;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navText {
+  position: relative;
+  z-index: 2;
+}
+
+.navItem:hover {
+  color: var(--text-white);
+}
+
+/* Active State Pill Glow */
+.active {
+  color: var(--accent-cyan) !important;
+}
+
+.activeIndicatorPill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: rgba(0, 245, 255, 0.06);
+  border: 1px solid rgba(0, 245, 255, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 245, 255, 0.1),
+              inset 0 0 6px rgba(0, 245, 255, 0.05);
+  pointer-events: none;
+  animation: pillPulse 2s infinite alternate;
+}
+
+@keyframes pillPulse {
+  0% {
+    box-shadow: 0 0 8px rgba(0, 245, 255, 0.08), inset 0 0 4px rgba(0, 245, 255, 0.03);
+    border-color: rgba(0, 245, 255, 0.15);
+  }
+  100% {
+    box-shadow: 0 0 14px rgba(0, 245, 255, 0.15), inset 0 0 8px rgba(0, 245, 255, 0.08);
+    border-color: rgba(0, 245, 255, 0.35);
+  }
+}
+
+/* Scroll progress track on dock edge */
+.progressTrack {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.progressBar {
+  height: 100%;
+  background: linear-gradient(to right, var(--accent-cyan), var(--accent-pink));
+  box-shadow: 0 0 10px var(--accent-cyan);
+  width: var(--scroll-progress, 0%);
+  transition: width 0.1s ease-out;
+}
+
+.navIcon {
+  display: none;
+}
+
+.navText {
+  display: inline-block;
+}
+
+.tooltip {
+  display: none;
+}
+
+/* Hamburger for Mobile Screen sizes */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 20px;
+  height: 14px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: none !important;
+  z-index: 101;
+}
+
+.bar {
+  width: 100%;
+  height: 2px;
+  background-color: var(--text-white);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 0 2px rgba(255, 255, 255, 0.5);
+}
+
+/* Mobile Hamburger to X Transformation */
+.hamburger:hover .bar {
+  background-color: var(--accent-cyan);
+  box-shadow: 0 0 4px var(--accent-cyan);
+}
+
+.bar:nth-child(1).barOpen {
+  transform: translateY(6px) rotate(45deg);
+  background-color: var(--accent-pink);
+  box-shadow: 0 0 4px var(--accent-pink);
+}
+
+.bar:nth-child(2).barOpen {
+  opacity: 0;
+}
+
+.bar:nth-child(3).barOpen {
+  transform: translateY(-6px) rotate(-45deg);
+  background-color: var(--accent-pink);
+  box-shadow: 0 0 4px var(--accent-pink);
+}
+
+/* Mobile Dropdown Panel styling */
+.mobileNavOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 99;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 100px;
+}
+
+.mobileNavMenu {
+  background: rgba(15, 15, 25, 0.92);
+  border: 1px solid rgba(0, 245, 255, 0.2);
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 
+              0 0 30px rgba(0, 245, 255, 0.1);
+  position: relative;
+  animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobileNavItem {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  padding: 12px;
+  text-align: left;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.mobileNavItem:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-white);
+}
+
+.mobileActive {
+  color: var(--accent-cyan);
+  background: rgba(0, 245, 255, 0.04);
+  border-left: 2px solid var(--accent-cyan);
+  padding-left: 10px;
+}
+
+.mobileActiveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-cyan);
+  box-shadow: var(--neon-shadow-cyan);
+}
+
+/* Responsive Styles */
+@media (max-width: 900px) {
+  .navMenu {
+    display: none;
+  }
+  .hamburger {
+    display: flex;
+  }
+  .dock {
+    padding: 12px 24px;
+  }
+}
+
+/* Scrolled Side Icon Dock - Floating on left side of the screen */
+@media (min-width: 901px) {
+  .scrolled {
+    top: 50%;
+    left: 20px;
+    width: auto;
+    transform: translateY(-50%);
+    padding: 0;
+  }
+
+  .dockScrolled {
+    flex-direction: column;
+    gap: 16px;
+    width: 60px;
+    border-radius: 30px;
+    padding: 24px 8px;
+    height: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 
+                0 0 20px rgba(0, 245, 255, 0.08);
+  }
+
+  .dockScrolled .logo {
+    display: none;
+  }
+
+  .dockScrolled .navMenu {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .dockScrolled .navIcon {
+    display: inline-block;
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+  }
+
+  .dockScrolled .active .navIcon {
+    color: var(--accent-cyan);
+    filter: drop-shadow(0 0 3px var(--accent-cyan));
+  }
+
+  .dockScrolled .navItem:hover .navIcon {
+    color: var(--text-white);
+  }
+
+  .dockScrolled .navText {
+    display: none;
+  }
+
+  .dockScrolled .tooltip {
+    display: block;
+    position: absolute;
+    left: 65px;
+    background: rgba(10, 10, 15, 0.95);
+    border: 1px solid var(--accent-cyan);
+    color: var(--text-white);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-10px);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+    box-shadow: var(--neon-shadow-cyan);
+    z-index: 1000;
+  }
+
+  .dockScrolled .navItem:hover .tooltip {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .dockScrolled .progressTrack {
+    bottom: 0;
+    right: 0;
+    left: auto;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .dockScrolled .progressBar {
+    width: 100% !important;
+    height: var(--scroll-progress, 0%) !important;
+    transition: height 0.1s ease-out;
+    background: linear-gradient(to bottom, var(--accent-cyan), var(--accent-pink));
+  }
+}
