@@ -172,7 +172,7 @@ const About = () => {
             >
               <div className={styles.imageInnerContainer}>
                 <img
-                  src="/images/aboutimgaji2.jpeg"
+                  src="/images/aboutimgaji34.jpeg"
                   alt="Professional Developer"
                   className={styles.developerImage}
                   onError={(e) => {
@@ -200,7 +200,10 @@ const About = () => {
 
             {/* Paragraph Introduction */}
             <motion.p className={styles.sectionParagraph} variants={fadeInUpVariants}>
-              I am a passionate Full Stack Developer dedicated to building highly interactive, scalable, and user-centric digital products. By combining clean frontend architecture with powerful and optimized backend systems, I bridge the gap between imagination and execution.
+              {/* I'm Ega Ajith, a passionate Full Stack Developer who loves turning ideas into real-world digital solutions. I specialize in building responsive, user-friendly frontend interfaces and scalable backend systems. With a strong foundation in modern web technologies, I enjoy creating applications that are both visually appealing and technically efficient. <br />
+
+              I continuously explore new technologies, improve my problem-solving skills, and embrace challenges that help me grow as a developer. My goal is to build impactful products that deliver exceptional user experiences and solve real-world problems. */}
+              I am Ega ajith Full Stack Developer passionate about building modern, scalable, and user-friendly web applications. I enjoy transforming ideas into powerful digital experiences through clean code, creative design, and continuous learning.
             </motion.p>
 
             {/* Highlight Cards 2x2 Grid */}
@@ -221,7 +224,7 @@ const About = () => {
                 </div>
                 <div>
                   <h4 className={styles.highlightTitle}>Backend Development</h4>
-                  <p className={styles.highlightDesc}>Node.js, Express, asynchronous programming, secure RESTful & GraphQL APIs.</p>
+                  <p className={styles.highlightDesc}>Node.js, Express, asynchronous programming, secure RESTful APIs.</p>
                 </div>
               </div>
 
@@ -279,7 +282,7 @@ const About = () => {
 
             {/* CTA Buttons */}
             <motion.div className={styles.ctaRow} variants={fadeInUpVariants}>
-              <a href="#" className={styles.primaryButton}>
+              <a href="/doc/ega%20ajith%20g.pdf" target="_blank" rel="noopener noreferrer" className={styles.primaryButton}>
                 <span>Download Resume</span>
                 <Download size={18} />
               </a>

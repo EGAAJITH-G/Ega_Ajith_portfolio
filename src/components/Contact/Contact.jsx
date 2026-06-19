@@ -86,8 +86,8 @@ const Contact = () => {
           >
             <div>
               <h3 className={styles.hubTitle}>
-                Let's Build Something Amazing Together
-                <span className={styles.hubSubtitle}>Open for new opportunities</span>
+                Let's Create Something Great Together
+                <span className={styles.hubSubtitle}>Excited to bring my skills, dedication, and enthusiasm to your organization.</span>
               </h3>
             </div>
 
@@ -98,7 +98,7 @@ const Contact = () => {
                 </div>
                 <div className={styles.infoDetails}>
                   <span className={styles.infoLabel}>Send Email</span>
-                  <span className={styles.infoText}>ajith@example.com</span>
+                  <span className={styles.infoText}>egaajith4343@gmail.com</span>
                 </div>
               </div>
 
@@ -108,7 +108,7 @@ const Contact = () => {
                 </div>
                 <div className={styles.infoDetails}>
                   <span className={styles.infoLabel}>Call Direct</span>
-                  <span className={styles.infoText}>+91 98765 43210</span>
+                  <span className={styles.infoText}>+91 63802 59861</span>
                 </div>
               </div>
 
@@ -125,7 +125,7 @@ const Contact = () => {
 
             <div className={styles.meetingBtnGroup}>
               <a 
-                href="https://wa.me/919876543210" 
+                href="https://wa.me/6380259861" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className={`${styles.meetBtn} ${styles.whatsappBtn} cyber-button`}
@@ -133,7 +133,7 @@ const Contact = () => {
                 <WhatsappIcon size={14} style={{ marginRight: '6px' }} /> WhatsApp
               </a>
               <a 
-                href="https://github.com/ega-ajith" 
+                href="https://github.com/EGAAJITH-G" 
                 target="_blank" 
                 rel="noopener noreferrer" 
                 className={`${styles.meetBtn} ${styles.githubBtn} cyber-button`}

@@ -2,8 +2,8 @@
   position: relative;
   width: 100%;
   background-color: #0A0A0F;
-  border-top: 1px solid var(--glass-border);
-  padding: 50px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 40px 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -16,52 +16,79 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 30px;
+  gap: 24px;
 }
 
 .logo {
   font-family: 'Orbitron', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   font-weight: 900;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   text-decoration: none;
-  background: linear-gradient(45deg, var(--accent-cyan), var(--accent-pink));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: logoGlow 3s infinite alternate;
+  color: var(--text-white);
+  transition: all 0.3s ease;
 }
 
-@keyframes logoGlow {
-  0% { filter: drop-shadow(0 0 5px rgba(0, 245, 255, 0.3)); }
-  100% { filter: drop-shadow(0 0 15px rgba(255, 77, 141, 0.6)); }
+.logoDot {
+  color: var(--accent-cyan);
+  text-shadow: var(--neon-shadow-cyan);
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  letter-spacing: 3px;
 }
 
 .socials {
   display: flex;
-  gap: 20px;
+  gap: 24px;
+  align-items: center;
 }
 
 .socialIcon {
   color: var(--text-muted);
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.socialIcon:hover {
-  color: var(--accent-cyan);
-  text-shadow: var(--neon-shadow-cyan);
-  transform: scale(1.1);
+/* Individual Brand Glow Highlights */
+.githubIcon:hover {
+  color: #ffffff;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+  transform: translateY(-4px) scale(1.12);
+}
+
+.linkedinIcon:hover {
+  color: #0077B5;
+  filter: drop-shadow(0 0 8px rgba(0, 119, 181, 0.8));
+  transform: translateY(-4px) scale(1.12);
+}
+
+.whatsappIcon:hover {
+  color: #25D366;
+  filter: drop-shadow(0 0 8px rgba(37, 211, 102, 0.8));
+  transform: translateY(-4px) scale(1.12);
+}
+
+.emailIcon:hover {
+  color: #FF4D8D;
+  filter: drop-shadow(0 0 8px rgba(255, 77, 141, 0.8));
+  transform: translateY(-4px) scale(1.12);
 }
 
 .copyright {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   text-align: center;
+  letter-spacing: 0.5px;
 }
 
 .backToTopBtn {
   position: absolute;
   right: 50px;
-  bottom: 40px;
+  bottom: 30px;
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -86,7 +113,7 @@
 /* Responsive */
 @media (max-width: 768px) {
   .footer {
-    padding: 40px 20px 80px 20px;
+    padding: 30px 20px 70px 20px;
   }
   
   .backToTopBtn {

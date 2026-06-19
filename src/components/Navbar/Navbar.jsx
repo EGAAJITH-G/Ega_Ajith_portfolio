@@ -85,7 +85,7 @@ const Navbar = () => {
 
         {/* Branding Logo */}
         <div className={styles.logo} onClick={() => handleNavClick('hero')}>
-          AJITH<span className={styles.logoDot}>.DEV</span>
+          EGA AJITH<span className={styles.logoDot}>.DEV</span>
         </div>
 
         {/* Navigation Items (Desktop) */}

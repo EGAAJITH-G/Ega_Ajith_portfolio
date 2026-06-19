@@ -4,25 +4,28 @@ import styles from './Certifications.module.css';
 const Certifications = () => {
   const certData = [
     {
-      title: 'AWS Certified Developer',
-      issuer: 'Amazon Web Services',
-      date: 'Jan 2025',
-      credId: 'AWS-DEC-84920',
-      image: 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?auto=format&fit=crop&w=800&q=80'
+      title: 'Diploma in computer application (DCA)',
+      issuer: 'Computer Software College',
+      date: 'Apr-01-2019 To Oct-01-2019',
+      credId: '3389',
+      image: '/images/Certifications_img/1.png',
+      link: 'https://drive.google.com/file/d/1avQCGWbbYR6waymwyWQEzWeaCfHEm3KO/view?usp=sharing'
     },
     {
-      title: 'Professional Cloud Developer',
-      issuer: 'Google Cloud Platform',
-      date: 'Nov 2025',
-      credId: 'GCP-PCD-92014',
-      image: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=800&q=80'
+      title: 'Build a Word Jumble using Java Basics',
+      issuer: 'Coursera',
+      date: 'Mar-21-2024',
+      credId: 'EV62SL6M9835',
+      image: '/images/Certifications_img/2.png',
+      link: 'https://drive.google.com/file/d/1m949YAJDrVD0Ys4lp1_bEOAt02iqMpa8/view?usp=sharing'
     },
     {
-      title: 'Front-End Developer Professional',
-      issuer: 'Meta / Coursera',
-      date: 'Feb 2024',
-      credId: 'META-FED-84921',
-      image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80'
+      title: 'Build an App in Android Studio using Resources',
+      issuer: 'Coursera',
+      date: 'Apr-16-2024',
+      credId: 'ZSYXSW6DJBVA',
+      image: '/images/Certifications_img/3.png',
+      link: 'https://drive.google.com/file/d/1KfDqDshPo8xinRXxhLhT9Gb9tzz9slzh/view?usp=sharing'
     }
   ];
 
@@ -34,7 +37,7 @@ const Certifications = () => {
     <section 
       id="certifications" 
       className={styles.certSection}
-      style={{ backgroundImage: 'url("/images/certifications-bg.png")' }}
+      style={{ backgroundImage: 'url("/images/Certificationsbg.jpeg")' }}
     >
       <div className={styles.certContainer}>
         {/* Section Header */}
@@ -49,7 +52,7 @@ const Certifications = () => {
             <div 
               key={idx} 
               className={`${styles.certCard} interactive`}
-              onClick={() => handleCardClick(cert.image)}
+              onClick={() => handleCardClick(cert.link)}
             >
               {/* Top Image Preview Container */}
               <div className={styles.cardImageContainer}>
@@ -59,7 +62,7 @@ const Certifications = () => {
                   className={styles.certImage} 
                   onError={(e) => {
                     // Fallback image
-                    e.target.src = 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?auto=format&fit=crop&w=600&q=80';
+                    // e.target.src = 'https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?auto=format&fit=crop&w=600&q=80';
                   }}
                 />
                 {/* Hover Actions Overlay */}

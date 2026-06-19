@@ -14,57 +14,59 @@ import Contact from './components/Contact/Contact';
 import Footer from './components/Footer/Footer';
 
 function App() {
+  const [isLoaderUnmounted, setIsLoaderUnmounted] = useState(false);
   const [isSystemOnline, setIsSystemOnline] = useState(false);
 
   return (
     <>
-      {/* 1. Full-screen Interactive Page Loader */}
-      {!isSystemOnline && (
-        <PageLoader onLoaded={() => setIsSystemOnline(true)} />
-      )}
+      {/* 1. Main Site Wrapper (Mounted early in the background for a smooth transition) */}
+      <div className={`siteWrapper ${isSystemOnline ? 'siteWrapperActive' : ''}`}>
+        {/* Aesthetic Cyberpunk Overlays */}
+        <div className="grid-overlay" />
 
-      {/* 2. Main Site Wrapper (Visible only when system boot is complete) */}
-      {isSystemOnline && (
-        <>
-          {/* Aesthetic Cyberpunk Overlays */}
-          <div className="grid-overlay" />
+        {/* Interactive Cursor */}
+        <CustomCursor />
 
-          {/* Interactive Cursor */}
-          <CustomCursor />
+        {/* Three.js Background Particle Constellation */}
+        {/* <ThreeBackground /> */}
 
-          {/* Three.js Background Particle Constellation */}
-          <ThreeBackground />
+        {/* Core Navigation Bar */}
+        <Navbar />
 
-          {/* Core Navigation Bar */}
-          <Navbar />
+        {/* Section 1: Cinematic Video Background Hero */}
+        <Hero />
 
-          {/* Section 1: Cinematic Video Background Hero */}
-          <Hero />
+        {/* Section 2: Workspace About Me */}
+        <About />
 
-          {/* Section 2: Workspace About Me */}
-          <About />
+        {/* Section 3: Commands Skills Matrix */}
+        <Skills />
 
-          {/* Section 3: Commands Skills Matrix */}
-          <Skills />
+        {/* Section 4: Projects Grid Showcase */}
+        <Projects />
 
-          {/* Section 4: Projects Grid Showcase */}
-          <Projects />
+        {/* Section 5: Work Process Connector Timeline */}
+        <Process />
 
-          {/* Section 5: Work Process Connector Timeline */}
-          <Process />
+        {/* Section 6: Experience Milestone Timeline */}
+        <Experience />
 
-          {/* Section 6: Experience Milestone Timeline */}
-          <Experience />
+        {/* Section 7: Draggable Certifications Carousel */}
+        <Certifications />
 
-          {/* Section 7: Draggable Certifications Carousel */}
-          <Certifications />
+        {/* Section 8: Form Contact Console */}
+        <Contact />
 
-          {/* Section 8: Form Contact Console */}
-          <Contact />
+        {/* Footer & Back to Top */}
+        <Footer />
+      </div>
 
-          {/* Footer & Back to Top */}
-          <Footer />
-        </>
+      {/* 2. Full-screen Page Loader on top */}
+      {!isLoaderUnmounted && (
+        <PageLoader 
+          onExitStart={() => setIsSystemOnline(true)}
+          onLoaded={() => setIsLoaderUnmounted(true)} 
+        />
       )}
     </>
   );

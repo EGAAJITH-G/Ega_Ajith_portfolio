@@ -55,17 +55,7 @@ const Skills = () => {
             </svg>
           )
         },
-        {
-          name: 'Redux',
-          level: 80,
-          desc: 'Managing complex application state efficiently.',
-          color: '#764ABC',
-          icon: (
-            <svg viewBox="0 0 24 24" className={styles.techIcon}>
-              <path d="M7.83 2a3 3 0 0 0-2.11.87l-3.85 3.82a3 3 0 0 0 0 4.24l9.16 9.17a3 3 0 0 0 4.24 0l3.85-3.82a3 3 0 0 0 0-4.24L9.95 2.88A3 3 0 0 0 7.83 2zm8.33 3.86a2.6 2.6 0 0 1 0 3.66l-3.66 3.66a2.6 2.6 0 0 1-3.66 0 2.6 2.6 0 0 1 0-3.66l3.66-3.66a2.6 2.6 0 0 1 3.66 0z" />
-            </svg>
-          )
-        },
+
         {
           name: 'Bootstrap',
           level: 92,
@@ -196,17 +186,6 @@ const Skills = () => {
           )
         },
         {
-          name: 'Postman',
-          level: 85,
-          desc: 'API testing and debugging.',
-          color: '#FF6C37',
-          icon: (
-            <svg viewBox="0 0 24 24" className={styles.techIcon}>
-              <path d="M12.016 0A12 12 0 0 0 0 12.016 12 12 0 0 0 12.016 24c4.606 0 8.653-2.617 10.655-6.47-.487.114-.99.18-1.509.18a6.386 6.386 0 0 1-6.387-6.387 6.353 6.353 0 0 1 1.765-4.39A11.956 11.956 0 0 0 12.016 0zm3.834 8.761c.42.42.664.98.664 1.579a2.23 2.23 0 0 1-2.233 2.233 2.223 2.223 0 0 1-1.578-.664 2.223 2.223 0 0 1-.664-1.579c0-.598.243-1.158.664-1.578a2.223 2.223 0 0 1 1.578-.664c.599 0 1.159.243 1.579.664zm3.924 3.923c.42.42.663.98.663 1.579a2.23 2.23 0 0 1-2.233 2.233 2.223 2.223 0 0 1-1.578-.664 2.223 2.223 0 0 1-.664-1.579c0-.598.243-1.158.664-1.578a2.223 2.223 0 0 1 1.578-.664c.599 0 1.159.243 1.579.664z" />
-            </svg>
-          )
-        },
-        {
           name: 'Figma',
           level: 75,
           desc: 'UI/UX collaboration and design.',
@@ -263,7 +242,7 @@ const Skills = () => {
     <section
       id="skills"
       className={styles.skillsSection}
-      style={{ backgroundImage: 'url("/images/skills-bg.png")' }}
+    style={{ backgroundImage: 'url("/images/image.png")' }}
     >
       <div className={styles.skillsContainer}>
         {/* Section Header */}

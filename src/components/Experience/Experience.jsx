@@ -5,57 +5,57 @@ import styles from './Experience.module.css';
 const Experience = () => {
   const milestones = [
     {
-      date: '2025 - PRESENT',
-      role: 'Lead Full Stack Developer',
-      company: 'Cybercorp Systems',
+      date: '2026 - PRESENT',
+      role: 'Full Stack Developer',
+      company: 'SoftnovaTech',
       side: styles.milestoneLeft,
       details: [
-        'Designed real-time WebSocket telemetry portals, handling 50k concurrent requests.',
-        'Developed performant, responsive frontend components integrated with WebGL maps.',
-        'Mentored and guided a team of 4 junior developers to enforce solid architectural clean code.'
+        'Built and deployed full stack web applications using React, Node.js, Express.js, and MySQL, Mongo DB.',
+        'Worked on real-world and live projects, implementing frontend, backend, and database functionalities.',
+        'Developed strong skills in API integration, authentication, debugging, and scalable application development.'
       ]
     },
     {
-      date: '2023 - 2025',
-      role: 'Senior Frontend Architect',
-      company: 'Nexus Technologies',
+      date: '2025',
+      role: 'Full Stack Developer Intern',
+      company: 'Softnovatech',
       side: styles.milestoneRight,
       details: [
-        'Optimized asset compilation setups, reducing initial load latency parameters by 45%.',
-        'Implemented state-of-the-art GSAP timeline animations for interactive landing pages.',
-        'Drafted responsive user flows for cross-browser, cross-device compatibility.'
+        'Developed responsive web applications using React, Node.js, Express.js, and MySQL.',
+        'Worked on API integration, database management, and authentication features.',
+        'Enhanced problem-solving abilities through real-world projects and collaborative development'
       ]
     },
     {
-      date: '2021 - 2023',
-      role: 'Full Stack Developer',
-      company: 'Digital Labs Ltd',
+      date: '2025',
+      role: 'Full Stack Developer Training',
+      company: 'Softnovatech',
       side: styles.milestoneLeft,
       details: [
-        'Maintained and tested RESTful API endpoints running on high-scale Express routing.',
-        'Constructed database schemas, improving MySQL indexing metrics by 20%.',
-        'Structured modular CSS and HTML templates, facilitating codebase reusability.'
+        'Learned the fundamentals of frontend development using HTML, CSS, JavaScript, and React.',
+        'Explored backend development concepts with Node.js, Express.js, and MySQL.',
+        'Practiced building full stack applications and improved problem-solving and debugging skills.'
       ]
     }
   ];
 
   const cardVariants = (isLeft) => ({
-    hidden: { 
-      opacity: 0, 
-      x: isLeft ? -80 : 80 
+    hidden: {
+      opacity: 0,
+      x: isLeft ? -80 : 80
     },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       x: 0,
       transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] }
     }
   });
 
   return (
-    <section 
-      id="experience" 
+    <section
+      id="experience"
       className={styles.experienceSection}
-      style={{ backgroundImage: 'url("/images/experience-bg.png")' }}
+      style={{ backgroundImage: 'url("/images/image.png")' }}
     >
       <div className={styles.experienceContainer}>
         <div className="section-header">
@@ -69,14 +69,14 @@ const Experience = () => {
 
           {milestones.map((ms, idx) => {
             const isLeft = ms.side === styles.milestoneLeft;
-            
+
             return (
               <div key={idx} className={`${styles.milestone} ${ms.side}`}>
                 {/* Node Dot */}
                 <div className={styles.timelineBadge} />
 
                 {/* Glass Card */}
-                <motion.div 
+                <motion.div
                   className={`${styles.milestoneCard} interactive`}
                   variants={cardVariants(isLeft)}
                   initial="hidden"
@@ -86,7 +86,7 @@ const Experience = () => {
                   <span className={styles.dateText}>{ms.date}</span>
                   <h3 className={styles.jobTitle}>{ms.role}</h3>
                   <div className={styles.company}>{ms.company}</div>
-                  
+
                   <ul className={styles.detailsList}>
                     {ms.details.map((detail, dIdx) => (
                       <li key={dIdx} className={styles.detailItem}>
