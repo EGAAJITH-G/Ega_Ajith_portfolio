@@ -1,0 +1,490 @@
+.loaderContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99999;
+  overflow: hidden;
+}
+
+/* CRT Scanlines Overlay */
+.scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  );
+  background-size: 100% 4px;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.15;
+  animation: crtFlicker 0.15s infinite;
+}
+
+/* Scrolling 3D perspective cyber grid - GPU Optimized */
+.gridBackground {
+  position: absolute;
+  top: -30vh;
+  left: -20vw;
+  width: 140vw;
+  height: 160vh;
+  background-image: 
+    linear-gradient(rgba(255, 26, 26, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 26, 26, 0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
+  background-position: center;
+  perspective: 400px;
+  opacity: 0.5;
+  z-index: 1;
+  pointer-events: none;
+  animation: gridScrollGPU 8s linear infinite;
+  will-change: transform;
+}
+
+
+
+/* Split Gates with Clip-Paths */
+.gate {
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #030303;
+  z-index: 1;
+  transition: transform 1.2s cubic-bezier(0.85, 0, 0.15, 1);
+  overflow: hidden;
+  will-change: transform;
+}
+
+.gateLeft {
+  left: 0;
+  clip-path: polygon(0 0, 55% 0, 45% 100%, 0 100%);
+}
+
+.gateRight {
+  left: 0;
+  clip-path: polygon(55% 0, 100% 0, 100% 100%, 45% 100%);
+}
+
+/* Glowing Laser Seams on each gate */
+.seamSVG {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+.exiting .seamSVG {
+  opacity: 1;
+}
+
+.seamLine {
+  stroke: var(--accent-red);
+  stroke-width: 0.35;
+  filter: drop-shadow(0 0 8px var(--accent-red)) drop-shadow(0 0 3px #ffffff);
+}
+
+/* Slide panels sideways when exiting */
+.exiting .gateLeft {
+  transform: translateX(-105%);
+}
+
+.exiting .gateRight {
+  transform: translateX(105%);
+}
+
+/* Center loading details */
+.loaderContent {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  text-align: center;
+  transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fadeOut {
+  opacity: 0;
+  transform: scale(0.9) translateY(-10px);
+  pointer-events: none;
+}
+
+/* Floating HUD Centerpiece with Parallax */
+.hudContainer {
+  width: 150px;
+  height: 150px;
+  position: relative;
+  margin-bottom: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.1s ease-out; /* Smooth hover-following */
+  will-change: transform;
+}
+
+.hudHexagonWrapper {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+}
+
+.hudCircle {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-origin: center;
+}
+
+.hexRing {
+  animation: rotateCW 14s linear infinite;
+  will-change: transform;
+}
+
+.orbitRing {
+  animation: rotateCCW 6s linear infinite;
+  will-change: transform;
+}
+
+.radarRing {
+  animation: rotateCW 18s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Gooey Liquid Fusion Core */
+.gooeyContainer {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.1s ease-out;
+  will-change: transform;
+}
+
+.gooeySVG {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.gooeyBlobWrapper {
+  filter: url(#goo);
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.blob {
+  position: absolute;
+  background: var(--accent-red);
+  border-radius: 50%;
+  filter: blur(2px);
+  box-shadow: 0 0 12px var(--accent-red);
+}
+
+.blobCenter {
+  width: 32px;
+  height: 32px;
+  top: 24px;
+  left: 24px;
+  animation: pulseCore 2s ease-in-out infinite alternate;
+}
+
+.blobOrbital1 {
+  width: 14px;
+  height: 14px;
+  top: 33px;
+  left: 33px;
+  animation: orbit1 4s infinite linear;
+}
+
+.blobOrbital2 {
+  width: 12px;
+  height: 12px;
+  top: 34px;
+  left: 34px;
+  animation: orbit2 5s infinite linear;
+}
+
+.blobOrbital3 {
+  width: 10px;
+  height: 10px;
+  top: 35px;
+  left: 35px;
+  animation: orbit3 3.5s infinite linear;
+}
+
+/* Sharp Text overlays core without blur */
+.hudLogoText {
+  position: absolute;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.9), 0 0 4px var(--accent-red);
+  z-index: 10;
+  pointer-events: none;
+  animation: pulseLogo 1.5s ease-in-out infinite alternate;
+}
+
+/* Brand Header */
+.brandGroup {
+  margin-bottom: 25px;
+}
+
+.brandTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 900;
+  letter-spacing: 5px;
+  color: var(--text-white);
+  text-shadow: 
+    -2px 0 0 rgba(0, 255, 204, 0.35), 
+    2px 0 0 rgba(255, 26, 26, 0.35),
+    0 0 10px rgba(255, 26, 26, 0.25);
+  margin-bottom: 6px;
+  animation: textGlitch 4s infinite step-end;
+}
+
+.brandDot {
+  color: var(--accent-red);
+  text-shadow: var(--neon-glow-red);
+}
+
+.brandSubtitle {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: rgba(255, 26, 26, 0.6);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+
+
+/* Segmented Battery-style Progress Indicator */
+.progressContainer {
+  width: 100%;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.progressLabel {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.progressPercent {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--accent-red);
+  text-shadow: var(--neon-glow-red);
+}
+
+.segmentedBar {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  height: 10px;
+}
+
+.segment {
+  flex: 1;
+  height: 100%;
+  background: rgba(255, 26, 26, 0.03);
+  border: 1px solid rgba(255, 26, 26, 0.08);
+  border-radius: 1px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.segmentActive {
+  background: var(--accent-red);
+  border-color: var(--accent-red);
+  box-shadow: 0 0 10px var(--accent-red), 0 0 2px #ffffff;
+  animation: segmentPulse 1.5s ease-in-out infinite alternate;
+}
+
+/* Corner HUD Metadata */
+.cornerInfo {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-family: 'Fira Code', monospace;
+  z-index: 10;
+  opacity: 0.65;
+  pointer-events: none;
+  animation: pulseCorner 3.5s ease-in-out infinite alternate;
+}
+
+.topLeft {
+  top: 30px;
+  left: 30px;
+  text-align: left;
+  border-left: 2px solid var(--accent-red);
+  padding-left: 10px;
+}
+
+.topRight {
+  top: 30px;
+  right: 30px;
+  text-align: right;
+  border-right: 2px solid var(--accent-red);
+  padding-right: 10px;
+}
+
+.bottomLeft {
+  bottom: 30px;
+  left: 30px;
+  text-align: left;
+  border-left: 2px solid var(--accent-red);
+  padding-left: 10px;
+}
+
+.bottomRight {
+  bottom: 30px;
+  right: 30px;
+  text-align: right;
+  border-right: 2px solid var(--accent-red);
+  padding-right: 10px;
+}
+
+.infoLabel {
+  font-size: 0.5rem;
+  color: var(--accent-red);
+  letter-spacing: 1.5px;
+}
+
+.infoValue {
+  font-size: 0.58rem;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Animations */
+@keyframes rotateCW {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes rotateCCW {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-360deg); }
+}
+
+@keyframes pulseCore {
+  0% { transform: scale(0.95); opacity: 0.9; }
+  100% { transform: scale(1.05); opacity: 1; }
+}
+
+@keyframes pulseLogo {
+  0% { transform: scale(0.97); text-shadow: 0 0 8px rgba(0,0,0,0.8), 0 0 3px var(--accent-red); }
+  100% { transform: scale(1.03); text-shadow: 0 0 15px rgba(0,0,0,0.9), 0 0 8px var(--accent-red); }
+}
+
+@keyframes segmentPulse {
+  0% { opacity: 0.85; box-shadow: 0 0 8px var(--accent-red); }
+  100% { opacity: 1; box-shadow: 0 0 14px var(--accent-red), 0 0 2px #ffffff; }
+}
+
+@keyframes pulseCorner {
+  0% { opacity: 0.45; }
+  100% { opacity: 0.75; }
+}
+
+@keyframes crtFlicker {
+  0% { opacity: 0.16; }
+  50% { opacity: 0.14; }
+  100% { opacity: 0.15; }
+}
+
+
+
+/* Liquid Blob Orbital Animations */
+@keyframes orbit1 {
+  0% { transform: rotate(0deg) translateX(25px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(25px) rotate(-360deg); }
+}
+
+@keyframes orbit2 {
+  0% { transform: rotate(120deg) translateX(21px) rotate(-120deg); }
+  100% { transform: rotate(-240deg) translateX(21px) rotate(240deg); }
+}
+
+@keyframes orbit3 {
+  0% { transform: rotate(240deg) translateX(23px) rotate(-240deg); }
+  100% { transform: rotate(600deg) translateX(23px) rotate(-600deg); }
+}
+
+/* Chromatic Aberration Text Glitch */
+@keyframes textGlitch {
+  0%, 95%, 100% {
+    text-shadow: 
+      -2px 0 0 rgba(0, 255, 204, 0.35), 
+      2px 0 0 rgba(255, 26, 26, 0.35),
+      0 0 10px rgba(255, 26, 26, 0.25);
+  }
+  96% {
+    text-shadow: 
+      -4px -1px 0 rgba(0, 255, 204, 0.75), 
+      4px 2px 0 rgba(255, 26, 26, 0.75),
+      0 0 15px var(--accent-red);
+  }
+  97% {
+    text-shadow: 
+      2px 3px 0 rgba(0, 255, 204, 0.75), 
+      -3px -2px 0 rgba(255, 26, 26, 0.75),
+      0 0 15px var(--accent-red);
+  }
+  98% {
+    text-shadow: 
+      -3px 2px 0 rgba(0, 255, 204, 0.75), 
+      3px -1px 0 rgba(255, 26, 26, 0.75),
+      0 0 15px var(--accent-red);
+  }
+}
+
+@keyframes gridScrollGPU {
+  0% {
+    transform: rotateX(60deg) scale(1.6) translateY(0);
+  }
+  100% {
+    transform: rotateX(60deg) scale(1.6) translateY(100px);
+  }
+}

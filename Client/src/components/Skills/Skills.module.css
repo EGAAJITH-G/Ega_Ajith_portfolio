@@ -1,0 +1,482 @@
+.skillsSection {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 100px 4% 80px 4%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: transparent;
+}
+
+.skillsContainer {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.sectionDescription {
+  max-width: 600px;
+  margin: 16px auto 0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+/* Bento Grid System */
+.bentoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(220px, auto);
+  gap: 24px;
+  width: 100%;
+}
+
+.bentoCard {
+  background: rgba(10, 10, 10, 0.45);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 24px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.bentoCard:hover {
+  border-color: rgba(255, 26, 26, 0.15);
+  box-shadow: 0 15px 40px rgba(255, 26, 26, 0.02);
+}
+
+/* Grid Span Modifiers */
+.spanTwoCols {
+  grid-column: span 2;
+}
+
+.spanTwoRows {
+  grid-row: span 2;
+}
+
+.spanThreeCols {
+  grid-column: span 3;
+}
+
+/* Card Header styles */
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bentoCardTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-white);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.accentRed {
+  color: var(--accent-red);
+}
+
+/* Tab selector */
+.tabContainer {
+  display: flex;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 4px;
+  border-radius: 12px;
+  gap: 4px;
+}
+
+.tabBtn {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: none !important;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tabBtn:hover {
+  color: var(--text-white);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.activeTab {
+  color: var(--text-white);
+  background: linear-gradient(135deg, var(--accent-red) 0%, #770000 100%);
+  box-shadow: var(--neon-glow-red);
+}
+
+/* Skill layout inside Console */
+.skillsBentoGrid {
+  position: relative;
+  width: 100%;
+}
+
+.skillsActiveWrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.bentoSkillItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: 16px;
+}
+
+.bentoSkillItem:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: var(--brand-color);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.skillHeaderRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-grow: 1;
+}
+
+.iconWrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--brand-color);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.bentoSkillItem:hover .iconWrapper {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--brand-color);
+  box-shadow: 0 0 10px var(--brand-color);
+}
+
+.techIcon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.skillInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.skillNameText {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.skillDescText {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+/* Circular Progress indicator */
+.circularGaugeContainer {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circularProgress {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.circleBg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.03);
+  stroke-width: 3.5;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transition: stroke-dasharray 1.2s ease-in-out;
+}
+
+.gaugeValue {
+  position: absolute;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-white);
+  letter-spacing: -0.2px;
+}
+
+/* Card 2: Balance list */
+.balanceList {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  height: 100%;
+}
+
+.balanceItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.balanceMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.balanceName {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-white);
+  flex-grow: 1;
+}
+
+.balanceVal {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.balanceBarTrack {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.balanceBarFill {
+  height: 100%;
+  border-radius: 3px;
+  width: 0%;
+}
+
+/* Card 3: Competencies */
+.competencyCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-content: center;
+  height: 100%;
+}
+
+.competencyBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.competencyBadge:hover {
+  background: rgba(255, 26, 26, 0.03);
+  border-color: rgba(255, 26, 26, 0.2);
+  color: var(--text-white);
+}
+
+/* Card 4: Core Specializations */
+.coreSpecsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.coreSpecItem {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+
+.coreSpecItem:hover {
+  background: rgba(255, 255, 255, 0.025);
+  border-color: var(--spec-color);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.specDotCyan {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #61DAFB;
+  box-shadow: 0 0 10px #61DAFB;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.specDotGreen {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #339933;
+  box-shadow: 0 0 10px #339933;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.specDotMongo {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #47A248;
+  box-shadow: 0 0 10px #47A248;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.specMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.specSubtitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.specTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.specDesc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Responsive bento layouts */
+@media (max-width: 1024px) {
+  .bentoGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .spanThreeCols {
+    grid-column: span 2;
+  }
+
+  .coreSpecsGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .skillsSection {
+    padding: 80px 20px;
+  }
+
+  .bentoGrid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+  }
+
+  .spanTwoCols, .spanTwoRows, .spanThreeCols {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .skillsActiveWrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .bentoCard {
+    padding: 20px;
+  }
+
+  .tabContainer {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .tabBtn {
+    padding: 6px 12px;
+    font-size: 0.7rem;
+  }
+
+  .bentoSkillItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .circularGaugeContainer {
+    align-self: flex-end;
+  }
+}

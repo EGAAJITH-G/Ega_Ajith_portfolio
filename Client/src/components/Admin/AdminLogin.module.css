@@ -1,0 +1,375 @@
+.loginSection {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #050508;
+  /* Cyberpunk mesh grid overlay */
+  background-image: 
+    linear-gradient(rgba(0, 245, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 245, 255, 0.015) 1px, transparent 1px),
+    radial-gradient(circle at center, rgba(138, 43, 226, 0.07) 0%, transparent 65%);
+  background-size: 30px 30px, 30px 30px, 100% 100%;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+/* scanline laser effect across screen */
+.loginSection::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 2;
+  background-size: 100% 4px, 6px 100%;
+  pointer-events: none;
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 460px;
+  background: rgba(10, 10, 18, 0.55);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1.5px solid rgba(0, 245, 255, 0.15);
+  border-radius: 16px;
+  padding: 45px 35px;
+  box-shadow: 0 0 35px rgba(0, 245, 255, 0.1), inset 0 0 20px rgba(0, 245, 255, 0.05);
+  position: relative;
+  z-index: 10;
+  animation: cardFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* futuristic top glowing tab */
+.loginCard::before {
+  content: '';
+  position: absolute;
+  top: -1.5px;
+  left: 30px;
+  width: 120px;
+  height: 4px;
+  background: #00f5ff;
+  box-shadow: 0 0 15px #00f5ff;
+  border-radius: 0 0 2px 2px;
+}
+
+.title {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 35px;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+}
+
+.formBox {
+  background: rgba(5, 5, 8, 0.7);
+  padding: 25px;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  border: 1.5px solid rgba(138, 43, 226, 0.25);
+  position: relative;
+}
+
+.formBox::after {
+  content: 'CONSOLE_GATE_v1.0.4';
+  position: absolute;
+  bottom: -10px;
+  right: 15px;
+  background: #050508;
+  padding: 0 8px;
+  font-size: 0.6rem;
+  color: #8a2be2;
+  border: 1px solid rgba(138, 43, 226, 0.25);
+  border-radius: 3px;
+}
+
+.formHeader {
+  color: #00f5ff;
+  font-weight: bold;
+  border-bottom: 1.5px dashed rgba(0, 245, 255, 0.25);
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(0, 245, 255, 0.3);
+}
+
+.formStatus {
+  margin-bottom: 20px;
+  color: #8e8ea8;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  border-left: 2px solid #8a2be2;
+  padding-left: 10px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.inputFieldWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inputLabel {
+  color: #00f5ff;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.textInput {
+  background: rgba(10, 10, 15, 0.8);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  padding: 12px 14px;
+  width: 100%;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 0.8rem;
+  outline: none;
+  border-radius: 6px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.textInput:focus {
+  border-color: #00f5ff;
+  background: rgba(0, 245, 255, 0.03);
+  box-shadow: 0 0 15px rgba(0, 245, 255, 0.15);
+}
+
+.errorText {
+  color: #ff3b7e;
+  font-size: 0.75rem;
+  margin-top: 15px;
+  text-align: center;
+  border: 1.5px solid rgba(255, 59, 126, 0.3);
+  background: rgba(255, 59, 126, 0.07);
+  padding: 10px;
+  border-radius: 6px;
+  animation: shake 0.4s ease-in-out;
+  text-shadow: 0 0 5px rgba(255, 59, 126, 0.2);
+}
+
+.submitBtn {
+  width: 100%;
+  background: linear-gradient(135deg, #00f5ff, #8a2be2);
+  border: none;
+  padding: 14px;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 6px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0, 245, 255, 0.2);
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  position: relative;
+}
+
+.submitBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(0, 245, 255, 0.45);
+}
+
+.submitBtn:active {
+  transform: translateY(1px);
+}
+
+.submitBtn:disabled {
+  background: rgba(255, 255, 255, 0.05);
+  color: #8e8ea8;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.backHome {
+  display: block;
+  text-align: center;
+  margin-top: 25px;
+  color: #8e8ea8;
+  font-size: 0.75rem;
+  text-decoration: none;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.backHome:hover {
+  color: #00f5ff;
+  text-shadow: 0 0 8px rgba(0, 245, 255, 0.5);
+}
+
+.formStatus::after {
+  content: ' ▍';
+  animation: blink 0.8s step-end infinite;
+  color: #8a2be2;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+/* Theme Toggle Button Style */
+.themeToggleBtn {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 100;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.themeToggleBtn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.05);
+}
+
+/* Light Theme Overrides */
+.lightTheme {
+  background-color: #f8fafc;
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.015) 1px, transparent 1px),
+    radial-gradient(circle at center, rgba(15, 23, 42, 0.04) 0%, transparent 65%);
+}
+
+.lightTheme::after {
+  display: none;
+}
+
+.lightTheme .themeToggleBtn {
+  background: rgba(15, 23, 42, 0.05);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  color: #0f172a;
+}
+
+.lightTheme .themeToggleBtn:hover {
+  background: rgba(15, 23, 42, 0.1);
+}
+
+.lightTheme .loginCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.02);
+}
+
+.lightTheme .loginCard::before {
+  background: #dc2626;
+  box-shadow: 0 0 8px #dc2626;
+}
+
+.lightTheme .title {
+  color: #0f172a;
+  text-shadow: none;
+}
+
+.lightTheme .formBox {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.lightTheme .formBox::after {
+  background: #f8fafc;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+}
+
+.lightTheme .formHeader {
+  color: #dc2626;
+  border-bottom: 1.5px dashed #e2e8f0;
+  text-shadow: none;
+}
+
+.lightTheme .formStatus {
+  color: #475569;
+  border-left: 2px solid #dc2626;
+}
+
+.lightTheme .formStatus::after {
+  color: #dc2626;
+}
+
+.lightTheme .inputLabel {
+  color: #0f172a;
+}
+
+.lightTheme .textInput {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #0f172a;
+}
+
+.lightTheme .textInput:focus {
+  border-color: #dc2626;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.lightTheme .errorText {
+  color: #b91c1c;
+  border: 1.5px solid #fecaca;
+  background: #fee2e2;
+  text-shadow: none;
+}
+
+.lightTheme .submitBtn {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.15);
+}
+
+.lightTheme .submitBtn:hover {
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+}
+
+.lightTheme .submitBtn:disabled {
+  background: #e2e8f0;
+  color: #94a3b8;
+}
+
+.lightTheme .backHome {
+  color: #64748b;
+}
+
+.lightTheme .backHome:hover {
+  color: #dc2626;
+  text-shadow: none;
+}

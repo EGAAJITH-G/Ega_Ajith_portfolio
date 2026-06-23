@@ -1,0 +1,216 @@
+.certSection {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 100px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: transparent;
+}
+
+.certSection::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: 1;
+}
+
+.certContainer {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+/* 3-Card Responsive Grid */
+.certGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  width: 100%;
+}
+
+/* Certificate Card */
+.certCard {
+  width: 100%;
+  background: rgba(15, 15, 15, 0.6);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid rgba(255, 26, 26, 0.1);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.certCard:hover {
+  transform: translateY(-8px);
+  border-color: var(--accent-red-hover);
+  box-shadow: var(--neon-glow-red);
+}
+
+/* Top Image Preview Container */
+.cardImageContainer {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(255, 26, 26, 0.1);
+}
+
+.certImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.certCard:hover .certImage {
+  transform: scale(1.05);
+}
+
+/* Hover Action Overlay */
+.imageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 3;
+}
+
+.certCard:hover .imageOverlay {
+  opacity: 1;
+}
+
+.viewBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(255, 26, 26, 0.08);
+  border: 1.5px solid var(--accent-red);
+  border-radius: 30px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--accent-red);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: var(--neon-glow-red);
+}
+
+/* Bottom Card Details */
+.cardDetails {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
+}
+
+.cardTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.iconCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 26, 26, 0.06);
+  border: 1px solid rgba(255, 26, 26, 0.15);
+  color: var(--accent-red);
+  transition: all 0.3s ease;
+}
+
+.certCard:hover .iconCircle {
+  background: rgba(255, 26, 26, 0.1);
+  border-color: var(--accent-red);
+  box-shadow: var(--neon-glow-red);
+}
+
+.issuerName {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.certTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-white);
+  line-height: 1.45;
+  letter-spacing: 0.2px;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 26, 26, 0.1);
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.credIdText {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.7rem;
+}
+
+/* Responsive Grid */
+@media (max-width: 1024px) {
+  .certGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .certGrid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .certSection {
+    padding: 80px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .certCard {
+    max-width: 100%;
+  }
+}

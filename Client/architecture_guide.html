@@ -1,0 +1,2210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>System Architecture Guide &amp; Analysis — EGA AJITH G</title>
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap');
+  :root {
+    --primary: #1e3a8a;
+    --primary-light: #eff6ff;
+    --accent: #0ea5e9;
+    --danger: #ef4444;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+    --dark: #0f172a;
+    --mid: #334155;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --bg: #ffffff;
+    --bg2: #f8fafc;
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #fff;
+    color: var(--dark);
+    font-size: 10pt;
+    line-height: 1.7;
+  }
+
+  /* ── PRINT BUTTON ── */
+
+  .print-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--primary);
+    color: white;
+    border: 1px solid var(--accent);
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 9pt;
+    cursor: pointer;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(30, 58, 138, 0.25);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+  }
+  .print-btn:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 213, 0.35);
+  }
+
+  /* ── COVER PAGE ── */
+
+  .cover {
+    page-break-after: always;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.3) 0%, transparent 70%);
+    top: -100px;
+    right: -100px;
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%);
+    bottom: -50px;
+    left: -50px;
+  }
+  .cover-badge {
+    background: rgba(37, 99, 235, 0.4);
+    border: 1px solid rgba(37, 99, 235, 0.6);
+    color: #93c5fd;
+    padding: 6px 20px;
+    border-radius: 100px;
+    font-size: 9pt;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 32px;
+    position: relative;
+    z-index: 1;
+  }
+  .cover h1 {
+    font-size: 38pt;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+    letter-spacing: -1px;
+  }
+  .cover h1 span {
+    color: #93c5fd;
+  }
+  .cover-sub {
+    font-size: 14pt;
+    color: #93c5fd;
+    font-weight: 400;
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 1;
+  }
+  .cover-meta {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 60px;
+    position: relative;
+    z-index: 1;
+  }
+  .cover-meta-item {
+    text-align: center;
+  }
+  .cover-meta-item .val {
+    font-size: 24pt;
+    font-weight: 900;
+    color: #93c5fd;
+  }
+  .cover-meta-item .lbl {
+    font-size: 8pt;
+    color: #94a3b8;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .cover-divider {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #1e3a8a, #0ea5e9);
+    border-radius: 2px;
+    margin: 0 auto 40px;
+    position: relative;
+    z-index: 1;
+  }
+  .cover-info {
+    display: flex;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .cover-info-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-size: 8.5pt;
+  }
+
+  /* ── TOC PAGE ── */
+
+  .toc-page {
+    page-break-after: always;
+    padding: 60px 5%;
+    width: 90%;
+    margin: 0 auto;
+  }
+  .toc-title {
+    font-size: 22pt;
+    font-weight: 900;
+    color: var(--dark);
+    margin-bottom: 8px;
+  }
+  .toc-subtitle {
+    color: var(--muted);
+    font-size: 10pt;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--border);
+  }
+  .toc-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dotted #e2e8f0;
+  }
+  .toc-num {
+    width: 36px;
+    height: 36px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 9pt;
+    flex-shrink: 0;
+    margin-right: 16px;
+  }
+  .toc-label {
+    flex: 1;
+    font-weight: 600;
+    font-size: 10pt;
+    color: var(--mid);
+  }
+  .toc-dots {
+    flex: 1;
+    border-bottom: 1px dotted #cbd5e1;
+    margin: 0 12px;
+  }
+  .toc-side {
+    font-size: 7.5pt;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    min-width: 125px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .toc-side.client {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+  }
+  .toc-side.server {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+  }
+  .toc-side.database {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+  .toc-side.shared {
+    background: #ede9fe;
+    color: #6d28d9;
+    border: 1px solid #ddd6fe;
+  }
+
+  /* ── MAIN CONTENT ── */
+
+  .content {
+    padding: 50px 5%;
+    width: 90%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+  /* Section title banner */
+
+  .section-banner {
+    background: linear-gradient(135deg, var(--primary), #3b82f6);
+    color: white;
+    padding: 20px 28px;
+    border-radius: 12px;
+    margin-bottom: 28px;
+    margin-top: 40px;
+    page-break-before: always;
+  }
+  .section-banner:first-child {
+    page-break-before: avoid;
+    margin-top: 0;
+  }
+  .section-banner .sec-num {
+    font-size: 8pt;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 4px;
+  }
+  .section-banner h2 {
+    font-size: 18pt;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+  }
+  h3 {
+    font-size: 13pt;
+    font-weight: 800;
+    color: var(--dark);
+    margin: 28px 0 12px;
+    padding-left: 12px;
+    border-left: 4px solid var(--primary);
+  }
+  h4 {
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--mid);
+    margin: 20px 0 8px;
+  }
+  p {
+    margin-bottom: 12px;
+    color: var(--mid);
+  }
+
+  /* ── STAT CARDS ── */
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin: 24px 0;
+  }
+  @media (max-width: 768px) {
+    .stat-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  .stat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .stat-card .num {
+    font-size: 16pt;
+    font-weight: 900;
+    color: var(--primary);
+    line-height: 1.2;
+  }
+  .stat-card .lbl {
+    font-size: 8pt;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 6px;
+    font-weight: 600;
+  }
+
+  /* ── TABLES ── */
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 9pt;
+  }
+  th {
+    background: var(--dark);
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 8.5pt;
+    letter-spacing: 0.5px;
+  }
+  th:first-child {
+    border-radius: 8px 0 0 0;
+  }
+  th:last-child {
+    border-radius: 0 8px 0 0;
+  }
+  td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--mid);
+    vertical-align: top;
+  }
+  tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+  tr:hover td {
+    background: var(--primary-light);
+  }
+  td code {
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    color: var(--primary);
+  }
+
+  /* ── CODE BLOCKS ── */
+
+  pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    padding: 20px 22px;
+    border-radius: 10px;
+    margin: 14px 0 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8pt;
+    line-height: 1.8;
+    border-left: 4px solid var(--primary);
+  }
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    background: #f1f5f9;
+    padding: 2px 7px;
+    border-radius: 4px;
+    color: var(--primary);
+  }
+  pre code {
+    background: transparent;
+    color: #e2e8f0;
+    padding: 0;
+    font-size: 8pt;
+  }
+
+  /* ── ALERT BOXES ── */
+
+  .alert {
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin: 16px 0;
+    font-size: 9.5pt;
+    border-left: 5px solid;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .alert-icon {
+    font-size: 14pt;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .alert-body strong {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 9pt;
+  }
+  .alert.warning {
+    background: #fffbeb;
+    border-color: #f59e0b;
+    color: #92400e;
+  }
+  .alert.danger {
+    background: #fef2f2;
+    border-color: #ef4444;
+    color: #991b1b;
+  }
+  .alert.info {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    color: #1e40af;
+  }
+  .alert.success {
+    background: #f0fdf4;
+    border-color: #10b981;
+    color: #065f46;
+  }
+
+  /* ── BUG CARDS ── */
+
+  .bug-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .bug-card {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 10px;
+    padding: 14px 16px;
+    border-left: 5px solid #ef4444;
+  }
+  .bug-card.resolved {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-left: 5px solid #22c55e;
+  }
+  .bug-card .bug-title {
+    font-weight: 700;
+    color: #991b1b;
+    font-size: 9.5pt;
+    margin-bottom: 4px;
+  }
+  .bug-card.resolved .bug-title {
+    color: #166534;
+  }
+  .bug-card .bug-loc {
+    font-size: 8pt;
+    color: #b91c1c;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .bug-card.resolved .bug-loc {
+    color: #15803d;
+  }
+  .bug-card .bug-desc {
+    font-size: 9pt;
+    color: var(--mid);
+    margin-bottom: 8px;
+  }
+  .bug-card .bug-fix {
+    font-size: 8.5pt;
+    color: #065f46;
+    background: #f0fdf4;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #a7f3d0;
+  }
+
+  /* ── API ENDPOINT BOXES ── */
+
+  .api-group {
+    margin: 24px 0;
+    border: 1px solid var(--border);
+    padding: 16px;
+    border-radius: 10px;
+    background: var(--bg2);
+  }
+  .api-title {
+    font-weight: 800;
+    font-size: 11pt;
+    color: var(--dark);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1.5px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .api-title .tag {
+    background: var(--primary);
+    color: white;
+    padding: 2px 10px;
+    border-radius: 100px;
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .endpoint {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 6px 0;
+  }
+  .endpoint:nth-child(even) {
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+  }
+  .method {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5pt;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    min-width: 58px;
+    text-align: center;
+  }
+  .get {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+  .post {
+    background: #dbeafe;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+  }
+  .put {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
+  }
+  .delete {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+  .ep-path {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    color: var(--dark);
+    font-weight: 600;
+  }
+  .ep-auth {
+    font-size: 7.5pt;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .ep-auth.admin {
+    background: #ede9fe;
+    color: #6d28d9;
+    border: 1px solid #ddd6fe;
+  }
+  .ep-auth.public {
+    background: #f1f5f9;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .ep-desc {
+    font-size: 8.5pt;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  /* ── DB SCHEMA ── */
+
+  .schema-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 16px 0;
+  }
+  @media (max-width: 900px) {
+    .schema-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 600px) {
+    .schema-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .schema-card {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  }
+  .schema-header {
+    background: var(--dark);
+    color: white;
+    padding: 10px 14px;
+    font-weight: 800;
+    font-size: 9.5pt;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .schema-header .icon {
+    font-size: 12pt;
+  }
+  .schema-body {
+    padding: 12px 14px;
+  }
+  .schema-field {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8pt;
+    padding: 4px 0;
+    border-bottom: 1px solid #f1f5f9;
+    color: var(--mid);
+  }
+  .schema-field:last-child {
+    border-bottom: none;
+  }
+  .schema-field .fname {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--dark);
+    font-weight: 600;
+  }
+  .schema-field .ftype {
+    color: #1e3a8a;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5pt;
+  }
+  .pk {
+    color: var(--accent) !important;
+  }
+
+  /* ── FLOW DIAGRAM ── */
+
+  .flow-diagram-container {
+    background: var(--bg2);
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    overflow-x: auto;
+  }
+  /* Key-Value Lists */
+
+  .key-value-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--bg2);
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin: 16px 0;
+  }
+  .key-value-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  .key-value-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .key-label {
+    color: var(--muted);
+    font-size: 9pt;
+    font-weight: 600;
+  }
+  .key-val {
+    color: var(--dark);
+    font-size: 9pt;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+  }
+  /* Enhancements layout grid */
+
+  .enhance-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin: 24px 0;
+  }
+  @media (max-width: 768px) {
+    .enhance-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .enhance-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  }
+  .enhance-card h4 {
+    font-size: 11.5pt;
+    color: var(--primary);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1.5px solid var(--border);
+    padding-bottom: 6px;
+  }
+  .enhance-card p {
+    font-size: 9pt;
+    color: var(--mid);
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .enhance-card .tech-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5pt;
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  /* ── FOOTER ── */
+
+  .page-footer {
+    border-top: 2px solid var(--border);
+    padding: 30px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8.5pt;
+    color: var(--muted);
+    margin-top: 60px;
+  }
+  .footer-logo {
+    font-weight: 900;
+    font-size: 11pt;
+    color: var(--primary);
+  }
+
+  /* ── PRINT RULES ── */
+
+  @media print {
+    body {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .cover {
+      min-height: 100vh;
+    }
+    .section-banner {
+      page-break-before: always;
+    }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .schema-grid, .bug-grid, .api-group, .enhance-grid {
+      break-inside: avoid;
+    }
+    .print-btn {
+      display: none !important;
+    }
+  }
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  </style>
+</head>
+
+<body>
+
+  <!-- Floating Print/PDF Button -->
+  <button class="print-btn" onclick="window.print()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+      <rect x="6" y="14" width="12" height="8" />
+    </svg>
+    Export PDF / Print Document
+  </button>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--                      COVER PAGE                       -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="cover">
+    <div class="cover-badge">Internal Engineering Blueprint — Access Controlled</div>
+    <h1>EGA AJITH G<br><span>System Architecture</span></h1>
+    <p class="cover-sub">Complete technical specification guide of the portfolio database, client components, and API
+      routing architecture.</p>
+    <div class="cover-divider"></div>
+    <div class="cover-meta">
+      <div class="cover-meta-item">
+        <div class="val">27</div>
+        <div class="lbl">API Endpoints</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="val">15+</div>
+        <div class="lbl">UI Components</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="val">1</div>
+        <div class="lbl">MongoDB DB</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="val">Admin</div>
+        <div class="lbl">Console Auth</div>
+      </div>
+    </div>
+    <div class="cover-info">
+      <div class="cover-info-pill">📅 June 2026</div>
+      <div class="cover-info-pill">⚙️ React + Vite + Express</div>
+      <div class="cover-info-pill">🔒 /admin.aji2004</div>
+      <div class="cover-info-pill">v1.0</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!--                    TABLE OF CONTENTS                  -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="toc-page">
+    <div class="toc-title">Table of Contents</div>
+    <div class="toc-subtitle">System Architecture Blueprint — Portfolio Management Console</div>
+
+    <div class="toc-item">
+      <div class="toc-label">Executive Summary &amp; Core Metrics</div>
+      <div class="toc-dots"></div>
+      <div class="toc-side shared">Client &amp; Server</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-label">Client UI/UX &amp; Frontend Components</div>
+      <div class="toc-dots"></div>
+      <div class="toc-side client">Client Side</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-label">Project Workspace Folder Directory</div>
+      <div class="toc-dots"></div>
+      <div class="toc-side shared">Client &amp; Server</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-label">Backend Server Architecture &amp; Data Flow</div>
+      <div class="toc-dots"></div>
+      <div class="toc-side server">Server Side</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-label">Database Schema Design &amp; ER Diagram</div>
+      <div class="toc-dots"></div>
+      <div class="toc-side database">Database Side</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-label">REST API Directory (27 Route Specifications)</div>
+      <div class="toc-dots"></div>
+      <div class="toc-side server">Server Side</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-label">Integration Code Snippets (Client/Server)</div>
+      <div class="toc-dots"></div>
+      <div class="toc-side shared">Client &amp; Server</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-label">Admin Control Panel &amp; Maintenance Mode</div>
+      <div class="toc-dots"></div>
+      <div class="toc-side shared">Client &amp; Server</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-label">Proposed Client-Side UI/UX Enhancements</div>
+      <div class="toc-dots"></div>
+      <div class="toc-side client">Client Side</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-label">System Vulnerability &amp; Bug Audit Ledger</div>
+      <div class="toc-dots"></div>
+      <div class="toc-side shared">Client &amp; Server</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-label">Production Deployment &amp; Infrastructure</div>
+      <div class="toc-dots"></div>
+      <div class="toc-side shared">Client &amp; Server</div>
+    </div>
+    <div class="toc-item">
+      <div class="toc-label">Local Development Setup &amp; Troubleshooting Guide</div>
+      <div class="toc-dots"></div>
+      <div class="toc-side shared">Client &amp; Server</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="content">
+
+    <!-- ── SECTION 1: EXECUTIVE SUMMARY ── -->
+    <div class="section-banner">
+      <div class="sec-num">Client &amp; Server Side</div>
+      <h2>Executive Summary &amp; Core Metrics</h2>
+    </div>
+
+    <p>This document presents the complete system architecture for the portfolio management system of <strong>EGA AJITH
+        G</strong>. The platform is designed as a secure, full-stack application connecting a modern, high-performance
+      React frontend via Vite with a secure Express.js API gateway and a robust MongoDB instance managed via Mongoose
+      schemas.</p>
+
+    <p>The application facilitates complete control over public portfolio assets (projects, certifications, skills)
+      while capturing telemetry, visitor traffic, and system errors directly into an administrative console.
+      Unauthorized access is blocked using state-of-the-art encryption middleware alongside dual visual layouts tailored
+      for administrator operations.</p>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="num">React + Vite</div>
+        <div class="lbl">Client Layer</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">Express.js</div>
+        <div class="lbl">Server Gateway</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">MongoDB</div>
+        <div class="lbl">Database Instance</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">27 Routes</div>
+        <div class="lbl">API Gateway</div>
+      </div>
+    </div>
+
+    <div class="alert info">
+      <div class="alert-icon">ℹ️</div>
+      <div class="alert-body">
+        <strong>System Blueprint Status: Verified &amp; Active</strong>
+        The client communicates directly with Express endpoints using a JWT-authenticated channel. The server enforces
+        schemas using Mongoose models and implements telemetry logging for hardware diagnostic reports.
+      </div>
+    </div>
+
+
+    <!-- ── SECTION 2: CLIENT UI/UX & FRONTEND ── -->
+    <div class="section-banner">
+      <div class="sec-num">Client Side</div>
+      <h2>Client UI/UX &amp; Frontend Components</h2>
+    </div>
+
+    <p>The frontend client utilizes modern single-page web mechanics, rendering highly interactive components supported
+      by hardware acceleration and WebGL features. Layout components are scoped using isolated CSS modules to prevent
+      naming collisions.</p>
+
+    <h3>Client Technologies Stack</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>Technology</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Framework</td>
+          <td><strong>React (v18+)</strong></td>
+          <td>Component-based reactive structure managing DOM bindings and local state values.</td>
+        </tr>
+        <tr>
+          <td>Build &amp; Bundle</td>
+          <td><strong>Vite Bundler</strong></td>
+          <td>Fast compiler compiling ES modules instantly with active hot-module replacement.</td>
+        </tr>
+        <tr>
+          <td>Animation Engine</td>
+          <td><strong>Framer Motion</strong></td>
+          <td>Orchestrates complex canvas entries, scroll timeline triggers, and writing effects.</td>
+        </tr>
+        <tr>
+          <td>WebGL Elements</td>
+          <td><strong>Three.js / React Three Fiber</strong></td>
+          <td>Compiles custom GPU-accelerated backdrop particle layers and space dust simulations.</td>
+        </tr>
+        <tr>
+          <td>Styling System</td>
+          <td><strong>CSS Modules</strong></td>
+          <td>Encapsulates component-specific CSS selectors inside isolated class namespaces.</td>
+        </tr>
+        <tr>
+          <td>Icon Library</td>
+          <td><strong>Lucide React</strong></td>
+          <td>Provides lightweight, high-fidelity outline vectors integrated into action nodes.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Key Frontend Mechanics</h3>
+    <div class="key-value-list">
+      <div class="key-value-item">
+        <span class="key-label">Custom Cursor Dynamics</span>
+        <span class="key-val">Spring-Interpolated Circle Cursor tracking pointer</span>
+      </div>
+      <div class="key-value-item">
+        <span class="key-label">Page Transition Gate</span>
+        <span class="key-val">Diagonal Laser Gate split wiping viewport elements</span>
+      </div>
+      <div class="key-value-item">
+        <span class="key-label">Dynamic Theme Control</span>
+        <span class="key-val">Sun / Moon switch matching active localStorage tags</span>
+      </div>
+      <div class="key-value-item">
+        <span class="key-label">Admin Layout Sidebar</span>
+        <span class="key-val">Sticky Viewport sidebar layout with access settings</span>
+      </div>
+      <div class="key-value-item">
+        <span class="key-label">Parallax Head-Up Display</span>
+        <span class="key-val">Interactive 3D grid layout tilting with pointer angle</span>
+      </div>
+    </div>
+
+    <div class="alert warning">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-body">
+        <strong>Theme Persistence Mechanism</strong>
+        The client stores the theme status inside <code>adminTheme</code> in localStorage. Toggling the theme switches
+        the application context classes, instantly applying the Red &amp; Black cyber theme overrides across the entire
+        page layout.
+      </div>
+    </div>
+
+    <h3>Theme &amp; Sound State Synchronization Lifecycle</h3>
+    <p>To deliver a cohesive interactive experience across separate layouts, the React client implements a localized
+      synchronization pattern via <code>localStorage</code> hooks:</p>
+    <ul>
+      <li><strong>Theme Sync</strong>: A state hook in the root layout monitors the <code>adminTheme</code> key. When
+        modified, the hook applies class lists like <code>.cyber-red</code> or <code>.corporate-blue</code> to the
+        <code>&lt;body&gt;</code> element, enabling isolated component stylesheets to toggle color schemes instantly.
+      </li>
+      <li><strong>Audio Preferences Sync</strong>: User preference for audio feedback is persisted under the
+        <code>sound_fx_enabled</code> key (boolean). The global <code>mute</code>/<code>unmute</code> command inside the
+        CLI Terminal or controls within the UI write to this setting.</li>
+      <li><strong>Audio Context Initialization</strong>: Due to modern browser autoplay security policies, the audio
+        engine delays initializing the Web Audio <code>AudioContext</code> until the first user interaction (click or
+        keypress), avoiding console exceptions.</li>
+    </ul>
+
+
+    <!-- ── SECTION 3: PROJECT WORKSPACE FOLDERS ── -->
+    <div class="section-banner">
+      <div class="sec-num">Client &amp; Server Side</div>
+      <h2>Project Workspace Folder Directory</h2>
+    </div>
+
+    <p>The workspace folder layout divides the project into clear concerns. The <code>Client</code> houses the React
+      environment and modules, while <code>server</code> maps model controllers, middlewares, and seed commands. Below
+      is the complete and detailed file directory structure of the workspace:</p>
+
+    <pre><code>Ega_Ajith_portfolio/
+├── Client/                      # React Frontend Client (Vite Single Page Application)
+│   ├── public/                  # Static assets and browser logos
+│   │   ├── favicon.ico          # Browser tab shortcut icon
+│   │   └── logo.svg             # SVG Vector brand logo
+│   ├── src/                     # React application source code files
+│   │   ├── assets/              # Theme graphics, static media, and image references
+│   │   ├── components/          # Scoped visual layout React components
+│   │   │   ├── About/           # Portfolio About Me section component
+│   │   │   │   ├── About.jsx
+│   │   │   │   └── About.module.css
+│   │   │   ├── Admin/           # Administrator Console Dashboard & Credentials Entry
+│   │   │   │   ├── AdminDashboard.jsx
+│   │   │   │   ├── AdminDashboard.module.css
+│   │   │   │   ├── AdminLogin.jsx
+│   │   │   │   └── AdminLogin.module.css
+│   │   │   ├── Certifications/  # Credentials and Professional Certificates Showcase
+│   │   │   │   ├── Certifications.jsx
+│   │   │   │   └── Certifications.module.css
+│   │   │   ├── Contact/         # Guest message entry form with mechanical key feedback
+│   │   │   │   ├── Contact.jsx
+│   │   │   │   └── Contact.module.css
+│   │   │   ├── CustomCursor/    # Cursor pointer spring-interpolated tracer component
+│   │   │   │   ├── CustomCursor.jsx
+│   │   │   │   └── CustomCursor.module.css
+│   │   │   ├── Experience/      # CV timeline tracking for professional milestones
+│   │   │   │   ├── Experience.jsx
+│   │   │   │   └── Experience.module.css
+│   │   │   ├── Footer/          # Layout footer segment and branding details
+│   │   │   │   ├── Footer.jsx
+│   │   │   │   └── Footer.module.css
+│   │   │   ├── Hero/            # Dynamic 3D Parallax introductory welcome spotlight
+│   │   │   │   ├── Hero.jsx
+│   │   │   │   └── Hero.module.css
+│   │   │   ├── Maintenance/     # Standby display screen for scheduled maintenance
+│   │   │   │   ├── MaintenanceMode.jsx
+│   │   │   │   └── MaintenanceMode.module.css
+│   │   │   ├── Navbar/          # Navigation hub with mechanical sound fx transitions
+│   │   │   │   ├── Navbar.jsx
+│   │   │   │   └── Navbar.module.css
+│   │   │   ├── PageLoader/      # Initial cyber system pre-loader splash view
+│   │   │   │   ├── PageLoader.jsx
+│   │   │   │   └── PageLoader.module.css
+│   │   │   ├── Process/         # Development steps workflow card layout
+│   │   │   │   ├── Process.jsx
+│   │   │   │   └── Process.module.css
+│   │   │   ├── Projects/        # Project grids, categories filter, and search inputs
+│   │   │   │   ├── Projects.jsx
+│   │   │   │   └── Projects.module.css
+│   │   │   ├── Skills/          # Technology metrics bento grid progress meters
+│   │   │   │   ├── Skills.jsx
+│   │   │   │   └── Skills.module.css
+│   │   │   ├── TerminalWidget/  # Retro CLI Interactive Terminal console component
+│   │   │   │   ├── TerminalWidget.jsx
+│   │   │   │   └── TerminalWidget.module.css
+│   │   │   └── ThreeBackground/ # WebGL Three.js interactive particles HUD canvas
+│   │   │       ├── ThreeBackground.jsx
+│   │   │       └── ThreeBackground.module.css
+│   │   ├── utils/               # Shared system helper services
+│   │   │   └── soundUtils.js    # Web Audio API programmatic mechanical sound synthesizer
+│   │   ├── App.css              # Global layout sheets
+│   │   ├── App.jsx              # Main routing interceptor and component mount configurations
+│   │   ├── index.css            # Base Tailwind imports and font override configs
+│   │   └── main.jsx             # React DOM injection compiler point
+│   ├── index.html               # Main HTML document template
+│   ├── vite.config.js           # Vite server and compiler configurations
+│   ├── vercel.json              # Vercel SPA routing redirects configuration
+│   ├── eslint.config.js         # ESLint quality audit rules configuration
+│   └── package.json             # Frontend package manifests and dependencies
+└── server/                      # Node.js + Express REST API routing gateway
+    ├── middleware/              # Authentication security check interceptors
+    │   └── auth.js              # Secures endpoint execution via Bearer JWT signature check
+    ├── models/                  # Mongoose Schema database definitions
+    │   ├── Admin.js             # Administrator access collection schema
+    │   ├── Analytics.js         # Visitor hit counters, devices, and unique IP mapping
+    │   ├── Certification.js     # Professional certificate credential references
+    │   ├── Message.js           # Guest mailbox contacts storage schema
+    │   ├── Project.js           # Showcase project portfolio items schema
+    │   └── Skill.js             # Skills categories, ratings, and hex color levels
+    ├── routes/                  # Express routing modules
+    │   ├── analytics.js         # Visitor counters and maintenance switcher endpoints
+    │   ├── auth.js              # Credentials decryption and token verify endpoints
+    │   ├── certifications.js     # Certification CRUD endpoints
+    │   ├── messages.js          # Guest feedback, status read, and delete endpoints
+    │   ├── projects.js          # Project list and administration endpoints
+    │   └── skills.js            # Technology level modifiers and adjustment endpoints
+    ├── scripts/                 # Development automation scripts
+    │   └── seed.js              # Database reset and initial content seeder script
+    ├── .env                     # Server environment variables config (Git ignored)
+    ├── .env.example             # Template for required environment configuration variables
+    ├── check_db_images.js       # Diagnostic utility to audit database base64 image sizes
+    ├── server.js                # Core Express application and connection loop entry
+    └── package.json             # Backend package manifests and dependencies</code></pre>
+
+
+    <!-- ── SECTION 4: BACKEND SERVER ── -->
+    <div class="section-banner">
+      <div class="sec-num">Server Side</div>
+      <h2>Backend Server Architecture &amp; Data Flow</h2>
+    </div>
+
+    <p>The server layer acts as a RESTful controller gateway. It connects routes directly to MongoDB model schema
+      controllers and filters incoming queries using validation middleware.</p>
+
+    <h3>Server Mechanics</h3>
+    <ul>
+      <li><strong>CORS Intercepts</strong>: Restricts cross-origin resource sharing, permitting only verified client
+        origin routes.</li>
+      <li><strong>Payload Constraints</strong>: Configured body-parser limits set to 10MB to facilitate base64 image
+        transfers from the portfolio admin dashboard.</li>
+      <li><strong>System Error Ledger</strong>: An active global cache registry (<code>systemErrorLedger</code>) stores
+        the latest 20 database or runtime error logs, feeding details directly to dashboard telemetry charts.</li>
+    </ul>
+
+    <h3>Security Middleware &amp; JWT</h3>
+    <p>All administrative database modifications require dynamic signature checks. Requests must attach a verified
+      authentication token in the request header:</p>
+    <pre><code>Authorization: Bearer &lt;JSON_WEB_TOKEN&gt;</code></pre>
+    <p>The Express middleware parses the token with the server's private <code>JWT_SECRET</code>, rejecting malformed
+      requests with <code>401 Denied</code> status codes and structured JSON alerts.</p>
+
+    <h3>System Data Flow &amp; Request Lifecycle</h3>
+    <div class="flow-diagram-container">
+      <svg width="600" height="140" viewBox="0 0 600 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="40" width="100" height="60" rx="6" fill="rgba(30,58,138,0.05)" stroke="var(--primary)"
+          stroke-width="2" />
+        <text x="60" y="75" fill="var(--dark)" font-size="11" font-weight="bold" font-family="'Inter', sans-serif"
+          text-anchor="middle">Client Page</text>
+
+        <path d="M110 70H160" stroke="var(--primary)" stroke-width="2" marker-end="url(#arrow)" />
+
+        <rect x="170" y="40" width="110" height="60" rx="6" fill="rgba(14,165,233,0.05)" stroke="var(--accent)"
+          stroke-width="2" />
+        <text x="225" y="70" fill="var(--dark)" font-size="10" font-weight="bold" font-family="'Inter', sans-serif"
+          text-anchor="middle">Express Gateway</text>
+        <text x="225" y="85" fill="var(--primary)" font-size="8" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle">(Auth Check)</text>
+
+        <path d="M280 70H330" stroke="var(--accent)" stroke-width="2" marker-end="url(#arrow)" />
+
+        <rect x="340" y="40" width="110" height="60" rx="6" fill="rgba(16,185,129,0.05)" stroke="var(--success)"
+          stroke-width="2" />
+        <text x="395" y="70" fill="var(--dark)" font-size="11" font-weight="bold" font-family="'Inter', sans-serif"
+          text-anchor="middle">API Route</text>
+        <text x="395" y="85" fill="var(--success)" font-size="8" font-family="'JetBrains Mono', monospace"
+          text-anchor="middle">(Controller)</text>
+
+        <path d="M450 70H500" stroke="var(--success)" stroke-width="2" marker-end="url(#arrow)" />
+
+        <rect x="510" y="40" width="80" height="60" rx="6" fill="rgba(15,23,42,0.05)" stroke="var(--dark)"
+          stroke-width="2" />
+        <text x="550" y="75" fill="var(--dark)" font-size="11" font-weight="bold" font-family="'Inter', sans-serif"
+          text-anchor="middle">MongoDB</text>
+
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6"
+            orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--dark)" />
+          </marker>
+        </defs>
+      </svg>
+    </div>
+    <h3>Password Hashing &amp; Hashing Mechanics (BCrypt)</h3>
+    <p>To prevent credentials exposure in the database, the server never stores plain-text passwords. It utilizes
+      <code>bcryptjs</code> to perform one-way cryptographic hashing:</p>
+    <ul>
+      <li><strong>Salt Generation</strong>: A cryptographically secure salt is generated using 10 rounds of
+        computational complexity. This slows down brute-force and dictionary attacks.</li>
+      <li><strong>Schema Pre-Save Hook</strong>: The Mongoose <code>AdminSchema</code> intercepts save and update
+        operations. If the password field is modified, it generates a salt, hashes the input password, and overwrites
+        the plain-text value:
+        <pre><code>AdminSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});</code></pre>
+      </li>
+      <li><strong>Signature Verification</strong>: When logging in, the server retrieves the document by username and
+        uses <code>bcrypt.compare()</code> to safely match the input password with the stored hash, preventing timing
+        attacks.</li>
+    </ul>
+
+    <h3>Data Sanitization &amp; Injection Prevention</h3>
+    <p>Security measures are implemented at the router and controller layers to shield the system from common web
+      vulnerabilities:</p>
+    <ul>
+      <li><strong>NoSQL Injection Shielding</strong>: Query parameters from untrusted clients are cast explicitly to
+        strings or verified object types. Mongoose strict schema casting prevents query operators (like <code>$gt</code>
+        or <code>$ne</code>) from being injected into filters.</li>
+      <li><strong>XSS (Cross-Site Scripting) Defense</strong>: Form inputs from the public Contact page (name, message,
+        email) are sanitized. The React client renders user input as plain text nodes (automatically escaping HTML
+        tags), and the backend validates inputs against strict string schemas before storage.</li>
+    </ul>
+
+
+    <!-- ── SECTION 5: DATABASE SCHEMA ── -->
+    <div class="section-banner">
+      <div class="sec-num">Database Side</div>
+      <h2>Database Schema Design &amp; ER Diagram</h2>
+    </div>
+
+    <p>The portfolio database utilizes <strong>MongoDB</strong> document structures. Mongoose models define strictly
+      typed validations, indexing key fields like usernames or email records for speed.</p>
+
+    <div class="schema-grid">
+      <!-- Admins Schema -->
+      <div class="schema-card">
+        <div class="schema-header"><span class="icon">👤</span> admins</div>
+        <div class="schema-body">
+          <div class="schema-field"><span class="fname pk">_id</span><span class="ftype">ObjectId PK</span></div>
+          <div class="schema-field"><span class="fname">username</span><span class="ftype">String UNIQUE</span></div>
+          <div class="schema-field"><span class="fname">password</span><span class="ftype">String (Hash)</span></div>
+          <div class="schema-field"><span class="fname">createdAt</span><span class="ftype">Date</span></div>
+          <div class="schema-field"><span class="fname">updatedAt</span><span class="ftype">Date</span></div>
+        </div>
+      </div>
+
+      <!-- Analytics Schema -->
+      <div class="schema-card">
+        <div class="schema-header"><span class="icon">📈</span> analytics</div>
+        <div class="schema-body">
+          <div class="schema-field"><span class="fname pk">_id</span><span class="ftype">ObjectId PK</span></div>
+          <div class="schema-field"><span class="fname">views</span><span class="ftype">Number</span></div>
+          <div class="schema-field"><span class="fname">uniqueIPs</span><span class="ftype">String[]</span></div>
+          <div class="schema-field"><span class="fname">devices</span><span class="ftype">JSON Object</span></div>
+          <div class="schema-field"><span class="fname">visitorLedger</span><span class="ftype">Array</span></div>
+          <div class="schema-field"><span class="fname">maintenance</span><span class="ftype">Boolean</span></div>
+        </div>
+      </div>
+
+      <!-- Projects Schema -->
+      <div class="schema-card">
+        <div class="schema-header"><span class="icon">📦</span> projects</div>
+        <div class="schema-body">
+          <div class="schema-field"><span class="fname pk">_id</span><span class="ftype">ObjectId PK</span></div>
+          <div class="schema-field"><span class="fname">title</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">desc</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">image</span><span class="ftype">String (base64)</span></div>
+          <div class="schema-field"><span class="fname">tags</span><span class="ftype">String[]</span></div>
+          <div class="schema-field"><span class="fname">githubUrl</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">liveUrl</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">category</span><span class="ftype">String</span></div>
+        </div>
+      </div>
+
+      <!-- Certifications Schema -->
+      <div class="schema-card">
+        <div class="schema-header"><span class="icon">📜</span> certifications</div>
+        <div class="schema-body">
+          <div class="schema-field"><span class="fname pk">_id</span><span class="ftype">ObjectId PK</span></div>
+          <div class="schema-field"><span class="fname">title</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">issuer</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">date</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">credId</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">link</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">credImage</span><span class="ftype">String (base64)</span></div>
+        </div>
+      </div>
+
+      <!-- Skills Schema -->
+      <div class="schema-card">
+        <div class="schema-header"><span class="icon">⚡</span> skills</div>
+        <div class="schema-body">
+          <div class="schema-field"><span class="fname pk">_id</span><span class="ftype">ObjectId PK</span></div>
+          <div class="schema-field"><span class="fname">name</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">level</span><span class="ftype">Number (0-100)</span></div>
+          <div class="schema-field"><span class="fname">category</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">color</span><span class="ftype">String (Hex)</span></div>
+          <div class="schema-field"><span class="fname">desc</span><span class="ftype">String</span></div>
+        </div>
+      </div>
+
+      <!-- Messages Schema -->
+      <div class="schema-card">
+        <div class="schema-header"><span class="icon">✉️</span> messages</div>
+        <div class="schema-body">
+          <div class="schema-field"><span class="fname pk">_id</span><span class="ftype">ObjectId PK</span></div>
+          <div class="schema-field"><span class="fname">name</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">email</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">phone</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">message</span><span class="ftype">String</span></div>
+          <div class="schema-field"><span class="fname">status</span><span class="ftype">unread|read</span></div>
+          <div class="schema-field"><span class="fname">createdAt</span><span class="ftype">Date</span></div>
+        </div>
+      </div>
+    </div>
+
+    <h3>Database Entity-Relationship (ER) Model</h3>
+    <p>The diagram below displays the collections relationship mapping. The Admin collection manages content items and
+      maintenance switches directly while visitors trigger hits and mail deliveries:</p>
+
+    <div class="flow-diagram-container" style="background: #ffffff; border: 1.5px solid var(--border);">
+      <svg width="640" height="240" viewBox="0 0 640 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Admin Box -->
+        <rect x="260" y="10" width="120" height="50" rx="6" fill="#f8fafc" stroke="var(--primary)" stroke-width="2" />
+        <text x="320" y="40" fill="var(--dark)" font-size="11" font-weight="bold" font-family="sans-serif"
+          text-anchor="middle">👤 Admins</text>
+
+        <!-- Lines from Admin to items -->
+        <path d="M260 35H90V90" stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="4 4"
+          marker-end="url(#arrow-er)" />
+        <path d="M320 60V90" stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="4 4"
+          marker-end="url(#arrow-er)" />
+        <path d="M380 35H550V90" stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="4 4"
+          marker-end="url(#arrow-er)" />
+
+        <!-- Projects Box -->
+        <rect x="30" y="90" width="120" height="50" rx="6" fill="#f8fafc" stroke="var(--mid)" stroke-width="2" />
+        <text x="90" y="120" fill="var(--dark)" font-size="10" font-weight="bold" font-family="sans-serif"
+          text-anchor="middle">📦 Projects</text>
+
+        <!-- Skills Box -->
+        <rect x="260" y="90" width="120" height="50" rx="6" fill="#f8fafc" stroke="var(--mid)" stroke-width="2" />
+        <text x="320" y="120" fill="var(--dark)" font-size="10" font-weight="bold" font-family="sans-serif"
+          text-anchor="middle">⚡ Skills</text>
+
+        <!-- Certs Box -->
+        <rect x="490" y="90" width="120" height="50" rx="6" fill="#f8fafc" stroke="var(--mid)" stroke-width="2" />
+        <text x="550" y="120" fill="var(--dark)" font-size="10" font-weight="bold" font-family="sans-serif"
+          text-anchor="middle">📜 Certs</text>
+
+        <!-- Visitor Group Actions -->
+        <rect x="140" y="180" width="120" height="50" rx="6" fill="#f0fdf4" stroke="var(--success)" stroke-width="2" />
+        <text x="200" y="210" fill="var(--dark)" font-size="10" font-weight="bold" font-family="sans-serif"
+          text-anchor="middle">✉️ Messages</text>
+
+        <rect x="380" y="180" width="120" height="50" rx="6" fill="#f0fdf4" stroke="var(--success)" stroke-width="2" />
+        <text x="440" y="210" fill="var(--dark)" font-size="10" font-weight="bold" font-family="sans-serif"
+          text-anchor="middle">📈 Analytics</text>
+
+        <!-- Connection from visitor actions to items -->
+        <path d="M200 180V140" stroke="var(--success)" stroke-width="1.5" marker-end="url(#arrow-er)" />
+        <path d="M440 180V140" stroke="var(--success)" stroke-width="1.5" marker-end="url(#arrow-er)" />
+
+        <defs>
+          <marker id="arrow-er" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6"
+            orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--mid)" />
+          </marker>
+        </defs>
+      </svg>
+    </div>
+
+    <h3>Database Seeding Mechanics</h3>
+    <p>The database seed script (located in <code>server/scripts/seed.js</code>) clears active collections and populates
+      default admin profiles, projects, skills matrices, and certification documents on request.</p>
+    <pre><code>// server/scripts/seed.js snippet
+const defaultAdmin = new Admin({
+  username: 'admin_ajith',
+  password: 'ajith_aji_2004' // Hashed pre-save by schema hook
+});
+await defaultAdmin.save();
+console.log('Seeded database with default administrator login details.');</code></pre>
+
+
+    <!-- ── SECTION 6: REST API DIRECTORY ── -->
+    <div class="section-banner">
+      <div class="sec-num">Server Side</div>
+      <h2>REST API Directory (27 Route Specifications)</h2>
+    </div>
+
+    <p>Base URL: <code>/api</code> — All authenticated route controllers expect a Bearer Token attached under client
+      headers.</p>
+
+    <!-- Auth Group -->
+    <div class="api-group">
+      <div class="api-title"><span class="tag">Auth</span> Authentication Module — 3 Routes</div>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="ep-path">/api/auth/login</span>
+        <span class="ep-auth public">Public</span>
+        <span class="ep-desc">Decrypt administrator console login gate (username, password)</span>
+      </div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="ep-path">/api/auth/verify</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Validate JWT signature, token life, and user session details</span>
+      </div>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="ep-path">/api/auth/change-password</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Overwrite existing admin credential keys with new hash codes</span>
+      </div>
+    </div>
+
+    <!-- Messages Group -->
+    <div class="api-group">
+      <div class="api-title"><span class="tag">Messages</span> Guest Contacts &amp; Inbox — 4 Routes</div>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="ep-path">/api/messages</span>
+        <span class="ep-auth public">Public</span>
+        <span class="ep-desc">Submit new visitor message details (name, email, phone, text)</span>
+      </div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="ep-path">/api/messages</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Fetch message collection logs stored in inbox databases</span>
+      </div>
+      <div class="endpoint">
+        <span class="method put">PUT</span>
+        <span class="ep-path">/api/messages/:id/read</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Mark selected inbox message status as read</span>
+      </div>
+      <div class="endpoint">
+        <span class="method delete">DEL</span>
+        <span class="ep-path">/api/messages/:id</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Remove message record completely from the database</span>
+      </div>
+    </div>
+
+    <!-- Projects Group -->
+    <div class="api-group">
+      <div class="api-title"><span class="tag">Projects</span> Portfolio Showcase Items — 4 Routes</div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="ep-path">/api/projects</span>
+        <span class="ep-auth public">Public</span>
+        <span class="ep-desc">Fetch complete project logs to render showcase slides</span>
+      </div>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="ep-path">/api/projects</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Publish new project document with title, category, description, and base64 string</span>
+      </div>
+      <div class="endpoint">
+        <span class="method put">PUT</span>
+        <span class="ep-path">/api/projects/:id</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Modify parameters of an existing project record by ID</span>
+      </div>
+      <div class="endpoint">
+        <span class="method delete">DEL</span>
+        <span class="ep-path">/api/projects/:id</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Delete target project record from the Mongo database</span>
+      </div>
+    </div>
+
+    <!-- Certs Group -->
+    <div class="api-group">
+      <div class="api-title"><span class="tag">Certs</span> Credentials &amp; Certifications — 4 Routes</div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="ep-path">/api/certifications</span>
+        <span class="ep-auth public">Public</span>
+        <span class="ep-desc">Fetch complete list of certifications to display in CV segments</span>
+      </div>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="ep-path">/api/certifications</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Create new certification record containing credential files and links</span>
+      </div>
+      <div class="endpoint">
+        <span class="method put">PUT</span>
+        <span class="ep-path">/api/certifications/:id</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Modify certification metadata strings or binary image logs</span>
+      </div>
+      <div class="endpoint">
+        <span class="method delete">DEL</span>
+        <span class="ep-path">/api/certifications/:id</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Erase certification document from DB registry</span>
+      </div>
+    </div>
+
+    <!-- Skills Group -->
+    <div class="api-group">
+      <div class="api-title"><span class="tag">Skills</span> Technology Matrices — 5 Routes</div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="ep-path">/api/skills</span>
+        <span class="ep-auth public">Public</span>
+        <span class="ep-desc">Fetch technology categories, levels, and colors for frontend graphics</span>
+      </div>
+      <div class="endpoint">
+        <span class="method put">PUT</span>
+        <span class="ep-path">/api/skills/adjust</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Batch adjustment of multiple skill level ratings simultaneously</span>
+      </div>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="ep-path">/api/skills</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Create a new technology node inside categories matrix list</span>
+      </div>
+      <div class="endpoint">
+        <span class="method put">PUT</span>
+        <span class="ep-path">/api/skills/:id</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Modify skill metrics, names, descriptions, or hex color values</span>
+      </div>
+      <div class="endpoint">
+        <span class="method delete">DEL</span>
+        <span class="ep-path">/api/skills/:id</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Erase skill node from database collections</span>
+      </div>
+    </div>
+
+    <!-- Analytics Group -->
+    <div class="api-group">
+      <div class="api-title"><span class="tag">Analytics</span> Telemetry &amp; System Monitor — 7 Routes</div>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="ep-path">/api/analytics/hit</span>
+        <span class="ep-auth public">Public</span>
+        <span class="ep-desc">Log page view hit, device user-agent details, and IP mapping</span>
+      </div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="ep-path">/api/analytics</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Fetch total view counts, devices statistics, and visitor history logs</span>
+      </div>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="ep-path">/api/analytics/clear</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Reset visitor telemetry parameters to zero state</span>
+      </div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="ep-path">/api/analytics/monitor</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Query server runtime stats (CPU loading, memory utilization, MongoDB status)</span>
+      </div>
+      <div class="endpoint">
+        <span class="method delete">DEL</span>
+        <span class="ep-path">/api/analytics/monitor/errors</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Clear application diagnostic error ledger</span>
+      </div>
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <span class="ep-path">/api/analytics/maintenance-status</span>
+        <span class="ep-auth public">Public</span>
+        <span class="ep-desc">Retrieve visitor maintenance active status</span>
+      </div>
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <span class="ep-path">/api/analytics/maintenance</span>
+        <span class="ep-auth admin">Admin</span>
+        <span class="ep-desc">Configure, toggle, or schedule maintenance window mode</span>
+      </div>
+    </div>
+
+    <h3>API Contract: Request/Response Payloads</h3>
+    <p>To establish strict client-server communication standards, the following structured payloads define the data
+      schema contract for critical API endpoints:</p>
+
+    <h4>1. Administrator Authentication Gate</h4>
+    <p><strong>Endpoint:</strong> <code>POST /api/auth/login</code></p>
+    <pre><code>// Request Body Payload
+{
+  "username": "admin_ajith",
+  "password": "plain_text_password"
+}
+
+// Success Response (200 OK)
+{
+  "success": true,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "message": "Authentication successful. Access granted."
+}
+
+// Error Response (401 Unauthorized)
+{
+  "success": false,
+  "message": "Invalid username or password configuration."
+}</code></pre>
+
+    <h4>2. Public Contact Inbox Dispatch</h4>
+    <p><strong>Endpoint:</strong> <code>POST /api/messages</code></p>
+    <pre><code>// Request Body Payload
+{
+  "name": "John Doe",
+  "email": "johndoe@example.com",
+  "phone": "+919876543210",
+  "message": "Hello Ajith, I would love to discuss a project with you."
+}
+
+// Success Response (201 Created)
+{
+  "success": true,
+  "data": {
+    "_id": "60b8d2f1f3e2b21cd8c12345",
+    "name": "John Doe",
+    "email": "johndoe@example.com",
+    "phone": "+919876543210",
+    "message": "Hello Ajith, I would love to discuss a project with you.",
+    "status": "unread",
+    "createdAt": "2026-06-22T01:55:00.000Z"
+  }
+}</code></pre>
+
+    <h4>3. Diagnostic Monitor Telemetry Feed</h4>
+    <p><strong>Endpoint:</strong> <code>GET /api/analytics/monitor</code> (Secured)</p>
+    <pre><code>// Success Response (200 OK)
+{
+  "status": "ONLINE",
+  "os": {
+    "platform": "win32",
+    "uptime": 14205,
+    "totalMemory": 17179869184,
+    "freeMemory": 8589934592,
+    "cpuUsage": 12.5
+  },
+  "database": {
+    "state": "CONNECTED",
+    "activeConnections": 3
+  },
+  "errors": [
+    {
+      "timestamp": "2026-06-22T01:30:15.000Z",
+      "message": "CastError: Cast to ObjectId failed for value \"invalid_id\"",
+      "path": "/api/projects/invalid_id",
+      "method": "PUT"
+    }
+  ]
+}</code></pre>
+
+
+    <!-- ── SECTION 7: INTEGRATION CODE SNIPPETS ── -->
+    <div class="section-banner">
+      <div class="sec-num">Client &amp; Server Side</div>
+      <h2>Integration Code Snippets (Client/Server)</h2>
+    </div>
+
+    <p>To implement seamless communication between layers, standard Axios hooks and Mongoose controllers are defined.
+      Below are implementation templates for secure JWT transactions:</p>
+
+    <h3>1. Client API Request Wrapper (React Axios)</h3>
+    <pre><code>import axios from 'axios';
+
+// Create configured Axios instance
+const api = axios.create({
+  baseURL: 'http://localhost:5000/api',
+  headers: { 'Content-Type': 'application/json' }
+});
+
+// Interceptor to inject Token
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('adminToken');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
+export default api;</code></pre>
+
+    <h3>2. Server Controller Route Handler (Express Controller)</h3>
+    <pre><code>import Project from '../models/Project.js';
+
+// Route logic to publish projects (Admin Secured)
+export const createProject = async (req, res) => {
+  try {
+    const { title, desc, image, tags, githubUrl, liveUrl, category } = req.body;
+    
+    const newProject = new Project({
+      title,
+      desc,
+      image,
+      tags,
+      githubUrl,
+      liveUrl,
+      category
+    });
+
+    const savedProject = await newProject.save();
+    res.status(201).json({ success: true, data: savedProject });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Database transaction failed', error: error.message });
+  }
+};</code></pre>
+
+
+    <!-- ── SECTION 8: ADMIN CONTROL PANEL ── -->
+    <div class="section-banner">
+      <div class="sec-num">Client &amp; Server Side</div>
+      <h2>Admin Control Panel &amp; Maintenance Mode</h2>
+    </div>
+
+    <p>The administrative dashboard provides complete dashboard management for public sections and runs telemetry
+      hardware checks dynamically. Access is restricted using encryption checks and a custom access route:</p>
+    <pre><code>Custom Path Location: /admin.aji2004</code></pre>
+
+    <p>The panel connects to system hardware telemetry, querying RAM allocation and processor load indicators directly
+      through built-in OS libraries on the hosting platform. The page layout automatically adapts styling overrides
+      depending on the active theme switcher.</p>
+
+    <h3>Console Setting Features</h3>
+    <div class="key-value-list">
+      <div class="key-value-item">
+        <span class="key-label">Change Decryption Key</span>
+        <span class="key-val">Hashes password on-save</span>
+      </div>
+      <div class="key-value-item">
+        <span class="key-label">Simulation Mode</span>
+        <span class="key-val">Simulates database offline triggers</span>
+      </div>
+      <div class="key-value-item">
+        <span class="key-label">Maintenance Mode Scheduler</span>
+        <span class="key-val">Toggles public site down-timer</span>
+      </div>
+    </div>
+
+    <h3>Maintenance Mode Lifecycle Flow</h3>
+    <p>When the admin enables maintenance mode, public visitor traffic is intercepted and redirected to a custom standby
+      cover page while admins bypass check routines to continue configurations:</p>
+
+    <div class="flow-diagram-container" style="background: #ffffff; border: 1.5px solid var(--border);">
+      <svg width="600" height="150" viewBox="0 0 600 150" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Sequence line -->
+        <line x1="80" y1="40" x2="80" y2="130" stroke="var(--muted)" stroke-dasharray="2 2" />
+        <line x1="300" y1="40" x2="300" y2="130" stroke="var(--muted)" stroke-dasharray="2 2" />
+        <line x1="520" y1="40" x2="520" y2="130" stroke="var(--muted)" stroke-dasharray="2 2" />
+
+        <!-- Participant boxes -->
+        <rect x="30" y="10" width="100" height="30" rx="4" fill="#f8fafc" stroke="var(--primary)" stroke-width="2" />
+        <text x="80" y="28" fill="var(--dark)" font-size="9" font-weight="bold" font-family="sans-serif"
+          text-anchor="middle">Visitor Page</text>
+
+        <rect x="250" y="10" width="100" height="30" rx="4" fill="#f8fafc" stroke="var(--accent)" stroke-width="2" />
+        <text x="300" y="28" fill="var(--dark)" font-size="9" font-weight="bold" font-family="sans-serif"
+          text-anchor="middle">App Router</text>
+
+        <rect x="470" y="10" width="100" height="30" rx="4" fill="#f8fafc" stroke="var(--dark)" stroke-width="2" />
+        <text x="520" y="28" fill="var(--dark)" font-size="9" font-weight="bold" font-family="sans-serif"
+          text-anchor="middle">API Status</text>
+
+        <!-- Message arrows -->
+        <path d="M80 60H300" stroke="var(--dark)" stroke-width="1.5" marker-end="url(#arrow-seq)" />
+        <text x="190" y="55" fill="var(--muted)" font-size="8" font-family="monospace" text-anchor="middle">1. Request
+          Page</text>
+
+        <path d="M300 80H520" stroke="var(--dark)" stroke-width="1.5" marker-end="url(#arrow-seq)" />
+        <text x="410" y="75" fill="var(--muted)" font-size="8" font-family="monospace" text-anchor="middle">2. GET
+          /maintenance-status</text>
+
+        <path d="M520 100H300" stroke="var(--danger)" stroke-width="1.5" marker-end="url(#arrow-seq)" />
+        <text x="410" y="95" fill="var(--danger)" font-size="8" font-family="monospace" text-anchor="middle">3. Return
+          status: { enabled: true }</text>
+
+        <path d="M300 120H80" stroke="var(--danger)" stroke-width="1.5" marker-end="url(#arrow-seq)" />
+        <text x="190" y="115" fill="var(--danger)" font-size="8" font-family="monospace" text-anchor="middle">4. Render
+          Standby Cover Screen</text>
+
+        <defs>
+          <marker id="arrow-seq" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6"
+            orient="auto-start-reverse">
+            <path d="M 0 1 L 10 5 L 0 9 z" fill="var(--dark)" />
+          </marker>
+        </defs>
+      </svg>
+    </div>
+
+
+    <!-- ── SECTION 9: CLIENT ENHANCEMENTS ── -->
+    <div class="section-banner">
+      <div class="sec-num">Client Side</div>
+      <h2>Proposed Client-Side UI/UX Enhancements</h2>
+    </div>
+
+    <p>To improve user experience and provide developer-centric interactivity, the following frontend modules are
+      scheduled for implementation within the React client application:</p>
+
+    <div class="enhance-grid">
+      <!-- CLI Terminal -->
+      <div class="enhance-card">
+        <h4>💻 1. Interactive CLI Terminal Widget</h4>
+        <p>A retro command-line overlay where developers can query portfolio stats by typing commands like
+          <code>about</code>, <code>skills</code>, <code>projects</code>, or <code>contact</code>.</p>
+        <span class="tech-tag">React State + Monospace Inputs</span>
+      </div>
+
+      <!-- Audio FX -->
+      <div class="enhance-card">
+        <h4>🔊 2. Mechanical Audio &amp; Audio Feedback</h4>
+        <p>Subtle mechanical keystroke clicks and terminal sweep sounds triggered by navigation transitions or toggles,
+          with a global mute switch stored in local state.</p>
+        <span class="tech-tag">HTML5 Audio API + AudioContext</span>
+      </div>
+
+      <!-- Fuzzy Search -->
+      <div class="enhance-card">
+        <h4>🔍 3. Fuzzy Search &amp; Multi-Tag Project Filter</h4>
+        <p>An autocompleting search box with scoring algorithms to filter portfolio project collections dynamically
+          based on technological tags (e.g. React, Node, WebGL).</p>
+        <span class="tech-tag">Fuse.js + React Memoization</span>
+      </div>
+
+      <!-- PWA -->
+      <div class="enhance-card">
+        <h4>📱 4. Progressive Web App (PWA) Offline Support</h4>
+        <p>Enables browser installation capabilities and registers service workers to cache layouts, static sheets, and
+          models, allowing complete offline viewing.</p>
+        <span class="tech-tag">Workbox + Service Workers</span>
+      </div>
+
+      <!-- 3D HUD Cards -->
+      <div class="enhance-card">
+        <h4>🌌 5. Three.js Interactive Particles HUD</h4>
+        <p>Upgrades the viewport introduction layout with 3D projection cards and orbital dust particle systems that
+          follow cursor gestures dynamically.</p>
+        <span class="tech-tag">Three.js + React Three Fiber</span>
+      </div>
+
+      <!-- Telemetry Dash -->
+      <div class="enhance-card">
+        <h4>📊 6. Real-Time Visitor Telemetry Widget</h4>
+        <p>A public-facing telemetry panel widget plotting live concurrent traffic hits, server response times, and
+          database latency calculations.</p>
+        <span class="tech-tag">Recharts + SSE / WebSockets</span>
+      </div>
+    </div>
+
+
+    <!-- ── SECTION 10: BUG AUDIT LEDGER ── -->
+    <div class="section-banner">
+      <div class="sec-num">Client &amp; Server Side</div>
+      <h2>System Vulnerability &amp; Bug Audit Ledger</h2>
+    </div>
+
+    <p>A static audit analysis of client modules, controller scripts, and Express route routers identifies security
+      vulnerabilities and operational defects. Remediation paths are detailed below:</p>
+
+    <div class="bug-grid">
+      <!-- Bug 1 -->
+      <div class="bug-card resolved">
+        <div class="bug-title">🟢 1. No Rate Limiting on Contact Form Transmissions &amp; Traffic Hits</div>
+        <div class="bug-loc">POST /api/messages | POST /api/analytics/hit</div>
+        <div class="bug-desc">
+          Public endpoints were unprotected by rate limiters, posing database flooding risks.
+        </div>
+        <div class="bug-fix">
+          <strong>Remediation Applied:</strong> Implemented a custom in-memory rate limiting middleware (<code>rateLimiter.js</code>) that registers and tracks IP hit sequences:
+          <pre><code>// Limits messages to 5 submissions per 15 minutes
+// Limits analytics hit registration to 3 requests per second</code></pre>
+        </div>
+      </div>
+
+      <!-- Bug 2 -->
+      <div class="bug-card resolved">
+        <div class="bug-title">🟢 2. Unhandled Database CastError on Invalid ObjectIDs</div>
+        <div class="bug-loc">DELETE /api/messages/:id | PUT /api/projects/:id | PUT /api/certifications/:id | PUT /api/skills/:id</div>
+        <div class="bug-desc">
+          Malformed ObjectIDs caused uncaught database exceptions and leaked system stack traces on 500 responses.
+        </div>
+        <div class="bug-fix">
+          <strong>Remediation Applied:</strong> Created <code>validateObjectId.js</code> middleware validation intercepting param requests and responding with a standard error message:
+          <pre><code>if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+  return res.status(400).json({ error: 'INVALID_ID' });
+}</code></pre>
+        </div>
+      </div>
+
+      <!-- Bug 3 -->
+      <div class="bug-card resolved">
+        <div class="bug-title">🟢 3. Missing JWT Token Revocation (Session Logouts)</div>
+        <div class="bug-loc">POST /api/auth/logout | Authorization Middleware</div>
+        <div class="bug-desc">
+          Tokens remained active and valid until expiration on logouts, risking admin access session hijackings.
+        </div>
+        <div class="bug-fix">
+          <strong>Remediation Applied:</strong> Created a Mongoose-backed <code>TokenBlacklist</code> model caching revoked sessions upon logout with auto-expiring records via MongoDB TTL indexing (<code>expireAfterSeconds: 0</code> on JWT expiry time).
+        </div>
+      </div>
+
+      <!-- Bug 4 -->
+      <div class="bug-card resolved">
+        <div class="bug-title">🟢 4. Potential Base64 Large Payload Bloating in Database</div>
+        <div class="bug-loc">POST/PUT /api/projects | POST/PUT /api/certifications</div>
+        <div class="bug-desc">
+          Direct unconstrained base64 uploads risked hitting MongoDB's 16MB document cap and bloating collection storage.
+        </div>
+        <div class="bug-fix">
+          <strong>Remediation Applied:</strong> Added API payload size constraints in Mongoose route files rejecting image base64 strings exceeding 2MB and returning a clean <code>400 Payload Too Large</code> payload response.
+        </div>
+      </div>
+
+      <!-- Bug 5 -->
+      <div class="bug-card resolved">
+        <div class="bug-title">🟢 5. Lack of Password Complexity Policy on Change-Password</div>
+        <div class="bug-loc">POST /api/auth/change-password</div>
+        <div class="bug-desc">
+          Weak administrative passphrases could be configured, leaving the console vulnerable to brute-force attempts.
+        </div>
+        <div class="bug-fix">
+          <strong>Remediation Applied:</strong> Implemented input strength validation using an Express regex assertion matching strict requirements (minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 numeric digit) before triggering hashes.
+        </div>
+      </div>
+
+      <!-- Bug 6 -->
+      <div class="bug-card resolved">
+        <div class="bug-title">🟢 6. Unlimited Growth of uniqueIps Array in Analytics Document (Database Bloat)</div>
+        <div class="bug-loc">Models/Analytics.js | POST /api/analytics/hit</div>
+        <div class="bug-desc">
+          IP storage array in the telemetry statistics document grew indefinitely, risking 16MB document bounds crash.
+        </div>
+        <div class="bug-fix">
+          <strong>Remediation Applied:</strong> Removed <code>uniqueIps</code> array. Created dedicated <code>Visit</code> model storing daily hits with a automatic 30-day Mongoose TTL deletion sweep index. Stats increments are calculated through visit presence.
+        </div>
+      </div>
+
+      <!-- Bug 7 -->
+      <div class="bug-card resolved">
+        <div class="bug-title">🟢 7. Localized State Desynchronization for Mechanical Sounds Preferences</div>
+        <div class="bug-loc">Client TerminalWidget.jsx | Client soundUtils.js</div>
+        <div class="bug-desc">
+          Sound state changes inside CLI terminal desynchronized from the rest of the application.
+        </div>
+        <div class="bug-fix">
+          <strong>Remediation Applied:</strong> Exposed custom event dispatching (<code>soundFXMuteToggled</code>) in <code>soundUtils.js</code> and registered active state hook listeners in <code>TerminalWidget.jsx</code> to synchronize audio preferences instantly.
+        </div>
+      </div>
+
+      <!-- Bug 8 -->
+      <div class="bug-card resolved">
+        <div class="bug-title">🟢 8. SPA Wildcard Rewrite Overrides Public API Routes in Vercel Production</div>
+        <div class="bug-loc">Client vercel.json</div>
+        <div class="bug-desc">
+          Production Vercel wildcard rules captured public REST requests under <code>/api/*</code> and returned HTML instead.
+        </div>
+        <div class="bug-fix">
+          <strong>Remediation Applied:</strong> Updated <code>vercel.json</code> rewrites mapping API subpaths directly to the production Railway backend API gateway (<code>https://ega-ajith-portfolio-server.up.railway.app/api/:path*</code>) before wildcard SPA rule matches.
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ── SECTION 11: DEPLOYMENT & INFRASTRUCTURE ── -->
+    <div class="section-banner">
+      <div class="sec-num">Client &amp; Server Side</div>
+      <h2>Production Deployment &amp; Infrastructure</h2>
+    </div>
+
+    <p>The system deployment maps static assets, runtime servers, and database storage to managed cloud instances. Code
+      updates automatically trigger testing pipelines before rolling deployments:</p>
+
+    <h3>Production Environment Configurations</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Service Layer</th>
+          <th>Hosting Platform</th>
+          <th>Configuration Role</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Client (Frontend)</strong></td>
+          <td>Vercel Cloud Edge</td>
+          <td>Serves compiled Vite index builds with static asset delivery optimization.</td>
+        </tr>
+        <tr>
+          <td><strong>Express (Backend API)</strong></td>
+          <td>Railway / Render Engine</td>
+          <td>Spawns active Node.js server loops, checking auth middleware on incoming queries.</td>
+        </tr>
+        <tr>
+          <td><strong>MongoDB (Primary DB)</strong></td>
+          <td>MongoDB Atlas Cluster</td>
+          <td>Provides multi-region replicas with automatic failover and disk encryption.</td>
+        </tr>
+        <tr>
+          <td><strong>Asset Bucket (Storage)</strong></td>
+          <td>AWS S3 Cloud Bucket</td>
+          <td>Stores project screenshot assets, cert files, and profile images, serving via CDN.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Required Environment Variables Config</h3>
+    <p>For operations, both local development files (<code>.env</code>) and production containers require variables:</p>
+    <pre><code># Database Connection String (Atlas Cluster)
+MONGO_URI=mongodb+srv://&lt;user&gt;:&lt;password&gt;@egacluster.mongodb.net/portfolio_db
+
+# Authorization Configurations
+JWT_SECRET=super_secret_high_entropy_signature_validation_hash_key_2026
+PORT=5000
+NODE_ENV=production
+
+# Cross-Origin Whitelist Targets
+CLIENT_URL=https://ega-ajith-g.vercel.app</code></pre>
+
+    <h3>CI/CD Pipeline Sequence (GitHub Actions)</h3>
+    <pre><code># .github/workflows/deploy.yml
+1. Trigger       → Code Push to main branch
+2. Validation    → Install Node dependencies, run lint compiler
+3. Test Phase    → Run Express route tests and MongoDB model validators
+4. Build Phase   → Build production Vite client assets (vite build)
+5. Deploy Edge   → Trigger Vercel deploy hook & deploy server container to Railway</code></pre>
+
+    <!-- ── SECTION 12: LOCAL SETUP & TROUBLESHOOTING ── -->
+    <div class="section-banner">
+      <div class="sec-num">Client &amp; Server Side</div>
+      <h2>Local Development Setup &amp; Troubleshooting Guide</h2>
+    </div>
+
+    <p>To run, test, and develop the portfolio workspace locally, follow this step-by-step setup and reference the
+      troubleshooting ledger below:</p>
+
+    <h3>Local Environment Setup Steps</h3>
+    <ol style="margin-left: 20px; margin-bottom: 20px; line-height: 2.0;">
+      <li><strong>Clone the Repository:</strong> Check out the workspace files to your local drive.
+        <pre><code>git clone https://github.com/EGAAJITH-G/Ega_Ajith_portfolio.git
+cd Ega_Ajith_portfolio</code></pre>
+      </li>
+      <li><strong>Setup Environment Configurations:</strong> Create a <code>.env</code> file inside the
+        <code>server</code> directory based on the template:
+        <pre><code>cd server
+copy .env.example .env</code></pre>
+        Configure your local MongoDB Connection string inside <code>server/.env</code>:
+        <pre><code>MONGO_URI=mongodb://127.0.0.1:27017/ajith_portfolio
+JWT_SECRET=any_high_entropy_secret_key_here
+PORT=5000</code></pre>
+      </li>
+      <li><strong>Install Dependencies:</strong> Install node modules for both the backend server and frontend client:
+        <pre><code># Install backend modules
+cd server && npm install
+
+# Install frontend modules
+cd ../Client && npm install</code></pre>
+      </li>
+      <li><strong>Seed the Database:</strong> Populate the local MongoDB instance with initial skills, projects, and
+        administrator credentials:
+        <pre><code>cd ../server
+node scripts/seed.js</code></pre>
+      </li>
+      <li><strong>Launch Development Loops:</strong> Start the concurrent live servers in separate terminal panes:
+        <pre><code># In server/ directory:
+npm run dev
+
+# In Client/ directory:
+npm run dev</code></pre>
+      </li>
+    </ol>
+
+    <h3>Troubleshooting Diagnostics Ledger</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%">Problem / Error</th>
+          <th style="width: 25%">Likely Cause</th>
+          <th>Remediation Protocol</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>"Error connecting to MongoDB..."</strong></td>
+          <td>Local MongoDB service is inactive or network port 27017 is blocked.</td>
+          <td>Verify that your local MongoDB daemon is running (<code>services.msc</code> on Windows or
+            <code>brew services start mongodb-community</code>). Check connection URI string in
+            <code>server/.env</code>.</td>
+        </tr>
+        <tr>
+          <td><strong>CORS Blockages in Browser Console</strong></td>
+          <td>Client running on unregistered port or mismatch in CORS whitelist settings.</td>
+          <td>Check the server configuration in <code>server.js</code>. Ensure the client's origin (e.g.,
+            <code>http://localhost:5173</code>) is permitted by CORS headers.</td>
+        </tr>
+        <tr>
+          <td><strong>"JWT_SECRET is not defined"</strong></td>
+          <td>Missing environment variable definition in <code>.env</code> configuration sheet.</td>
+          <td>Check that <code>server/.env</code> is placed directly in the <code>server/</code> root directory and
+            contains a valid <code>JWT_SECRET</code> string value. Restart the node server.</td>
+        </tr>
+        <tr>
+          <td><strong>"Expected corresponding JSX closing tag..."</strong></td>
+          <td>Syntax errors or unclosed React JSX elements during webpack compile stage.</td>
+          <td>Open the specified file in the error stack trace, locate the unclosed tag (e.g., in
+            <code>Projects.jsx</code>) and correct it. Run <code>npm run build</code> to verify compiled assets.</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <!-- ── FOOTER ── -->
+    <div class="page-footer">
+      <div class="footer-logo">EGA AJITH G // Architecture Blueprint</div>
+      <div>System Infrastructure Guide v1.0 — June 2026 — Internal &amp; Confidential</div>
+      <div>All Rights Reserved &copy; 2026</div>
+    </div>
+
+  </div>
+
+</body>
+
+</html>
