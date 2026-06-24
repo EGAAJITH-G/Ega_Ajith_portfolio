@@ -30,7 +30,7 @@ const logToErrorLedger = (message, stack, path, method) => {
   if (global.systemErrorLedger.length > 20) {
     global.systemErrorLedger = global.systemErrorLedger.slice(0, 20);
   }
-  
+
   // Forward to mobile via Telegram Bot
   sendTelegramAlert(errorEntry).catch(err => {
     console.error('[TELEGRAM FORWARD FAILED]', err.message);
@@ -78,6 +78,10 @@ app.use('/api/projects', projectRoutes);
 app.use('/api/certifications', certificationRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/analytics', analyticsRoutes);
+
+app.get('/', (req, res) => {
+  res.send('Portfolio Backend Running Successfully 🚀');
+});
 
 // Health Check Endpoint
 app.get('/api/status', (req, res) => {
