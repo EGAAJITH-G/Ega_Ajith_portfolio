@@ -321,9 +321,12 @@
 
 .languageText {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--accent-red);
+  font-size: 0.79rem;
+  font-weight: 800;
+  color: #00fffb;
+  text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .readmeContent {
@@ -333,6 +336,10 @@
 }
 
 .readmeHeaderTitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 1.35rem;
   font-weight: 800;
@@ -514,11 +521,78 @@
 }
 
 .cardProjectTitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
   font-family: 'Space Grotesk', sans-serif;
   font-size: 1.05rem;
   font-weight: 700;
   color: var(--text-white);
   letter-spacing: 0.5px;
+}
+
+.appTypeBadge {
+  display: inline-block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 26, 26, 0.3);
+  /* color: var(--accent-red); */
+  color: #FFD700;
+  background: rgba(255, 26, 26, 0.05);
+  box-shadow: 0 0 8px rgba(255, 26, 26, 0.15);
+}
+
+.statusBadge {
+  display: inline-block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
+}
+
+.statusLive {
+  border: 1px solid rgba(0, 255, 100, 0.3);
+  color: #00ff64;
+  background: rgba(0, 255, 100, 0.05);
+  text-shadow: 0 0 8px rgba(0, 255, 100, 0.3);
+}
+
+.statusCurrent {
+  border: 1px solid rgba(255, 170, 0, 0.3);
+  color: #ffaa00;
+  background: rgba(255, 170, 0, 0.05);
+  text-shadow: 0 0 8px rgba(255, 170, 0, 0.3);
+}
+
+.statusFinished {
+  border: 1px solid rgba(0, 150, 255, 0.3);
+  color: #0096ff;
+  background: rgba(0, 150, 255, 0.05);
+  text-shadow: 0 0 8px rgba(0, 150, 255, 0.3);
+}
+
+.imageStatusBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 4;
+  font-size: 0.6rem;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: rgba(10, 10, 15, 0.85) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
 .cardProjectDesc {
@@ -626,6 +700,26 @@
   box-shadow: var(--neon-glow-red);
 }
 
+/* Horizontal / Wide card style (spans 2 columns on desktop) */
+.cardLayoutRight {
+  grid-column: span 2;
+  flex-direction: row-reverse !important; /* Image on right, details on left */
+}
+
+.cardLayoutRight .cardImageWrapper {
+  width: 45% !important;
+  height: 100% !important;
+  min-height: 250px !important;
+}
+
+.cardLayoutRight .cardDetails {
+  width: 55% !important;
+  height: 100% !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 /* ==========================================================================
    3. Responsive Media Queries
    ========================================================================== */
@@ -648,6 +742,19 @@
 
   .cardsGrid {
     grid-template-columns: 1fr;
+  }
+
+  .cardLayoutRight {
+    grid-column: span 1 !important;
+    flex-direction: column !important;
+  }
+  .cardLayoutRight .cardImageWrapper {
+    width: 100% !important;
+    height: 160px !important;
+    min-height: unset !important;
+  }
+  .cardLayoutRight .cardDetails {
+    width: 100% !important;
   }
 
   .readmeTopBar {
@@ -807,4 +914,43 @@
   border-radius: 12px;
   background: rgba(0, 0, 0, 0.15);
   width: 100%;
+}
+
+.apiOfflineMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(255, 26, 26, 0.03);
+  border: 1.5px dashed rgba(255, 26, 26, 0.2);
+  border-radius: 16px;
+  gap: 15px;
+  box-shadow: 0 0 20px rgba(255, 26, 26, 0.05);
+  margin: 30px auto;
+  max-width: 600px;
+}
+
+.errorIcon {
+  color: #ff3b7e;
+  filter: drop-shadow(0 0 5px rgba(255, 59, 126, 0.5));
+}
+
+.errorTitle {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #ff3b7e;
+  text-shadow: 0 0 10px rgba(255, 59, 126, 0.2);
+}
+
+.errorDescription {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
 }

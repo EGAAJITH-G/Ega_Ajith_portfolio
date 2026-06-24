@@ -1,8 +1,21 @@
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import styles from './Experience.module.css';
 
 const Experience = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Monitor resize to adjust animation axes on mobile
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 568);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const milestones = [
     {
       date: '2026 - PRESENT',
@@ -53,7 +66,7 @@ const Experience = () => {
   const cardVariants = (isLeft) => ({
     hidden: {
       opacity: 0,
-      x: isLeft ? -80 : 80
+      x: isMobile ? 40 : (isLeft ? -80 : 80)
     },
     visible: {
       opacity: 1,

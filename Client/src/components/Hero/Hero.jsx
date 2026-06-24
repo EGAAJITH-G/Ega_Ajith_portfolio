@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import HeroTerminal from './HeroTerminal';
 import styles from './Hero.module.css';
 
 const roles = ["FULL STACK DEVELOPER", "MERN STACK DEVELOPER", "FRONTEND DEVELOPER", "UI/UX CREATOR"];
@@ -157,27 +158,14 @@ const Hero = ({ isSystemOnline }) => {
           </motion.div>
         </motion.div>
 
-        {/* AI Core centerpiece avatar and rings */}
+        {/* Interactive IDE Code Terminal Mockup centerpiece */}
         <motion.div
           className={styles.imageCol}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: isSystemOnline ? 1 : 0, scale: isSystemOnline ? 1 : 0.8 }}
-          transition={{ duration: 2, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: isSystemOnline ? 1 : 0, x: isSystemOnline ? 0 : 50 }}
+          transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
         >
-          <div className={styles.coreWrapper}>
-            <img
-              src="/images/t1.png"
-              alt="AI Core Centerpiece"
-              className={styles.profileImg}
-              onError={(e) => {
-                e.target.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80';
-              }}
-            />
-            <div className={`${styles.ring} ${styles.ring1}`} />
-            <div className={`${styles.ring} ${styles.ring2}`} />
-            <div className={`${styles.ring} ${styles.ring3}`} />
-            <div className={styles.coreGlow} />
-          </div>
+          <HeroTerminal />
         </motion.div>
       </div>
     </section>

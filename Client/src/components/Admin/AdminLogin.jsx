@@ -27,16 +27,16 @@ const AdminLogin = () => {
           'Authorization': `Bearer ${token}`
         }
       })
-      .then(res => {
-        if (res.status === 200) {
-          navigate('/admin.aji2004');
-        } else {
+        .then(res => {
+          if (res.status === 200) {
+            navigate('/admin.aji2004');
+          } else {
+            localStorage.removeItem('adminToken');
+          }
+        })
+        .catch(() => {
           localStorage.removeItem('adminToken');
-        }
-      })
-      .catch(() => {
-        localStorage.removeItem('adminToken');
-      });
+        });
     }
   }, [navigate]);
 
@@ -78,8 +78,8 @@ const AdminLogin = () => {
 
   return (
     <section className={`${styles.loginSection} ${theme === 'light' ? styles.lightTheme : ''}`}>
-      <button 
-        className={styles.themeToggleBtn} 
+      <button
+        className={styles.themeToggleBtn}
         onClick={toggleTheme}
         title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
         type="button"
@@ -101,8 +101,8 @@ const AdminLogin = () => {
             <div className={styles.inputGroup}>
               <div className={styles.inputFieldWrapper}>
                 <label className={styles.inputLabel}>Admin Username</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className={styles.textInput}
@@ -113,8 +113,8 @@ const AdminLogin = () => {
               </div>
               <div className={styles.inputFieldWrapper}>
                 <label className={styles.inputLabel}>Decryption Password</label>
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className={styles.textInput}
@@ -127,8 +127,8 @@ const AdminLogin = () => {
 
             {error && <div className={styles.errorText}>{error}</div>}
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className={styles.submitBtn}
               disabled={loading}
             >

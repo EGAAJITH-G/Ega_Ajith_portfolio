@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Cpu, Database, Wrench, Sparkles, Terminal, Activity, Layers, CheckCircle } from 'lucide-react';
+import { Cpu, Database, Wrench, Sparkles, Terminal, Activity, Layers, CheckCircle, AlertTriangle } from 'lucide-react';
 import styles from './Skills.module.css';
 
 const INITIAL_SKILLS = [
@@ -212,6 +212,7 @@ const renderSkillIcon = (name, svgPath) => {
 
 const Skills = () => {
   const [dbSkills, setDbSkills] = useState([]);
+  const [apiError, setApiError] = useState(false);
 
   useEffect(() => {
     fetch('/api/skills')
@@ -221,9 +222,11 @@ const Skills = () => {
       })
       .then(data => {
         setDbSkills(data);
+        setApiError(false);
       })
       .catch(() => {
         console.log('[SKILLS] Database skills matrix offline. Using static fallbacks.');
+        setApiError(true);
       });
   }, []);
 
@@ -328,164 +331,173 @@ const Skills = () => {
           </p>
         </div>
 
-        {/* Bento Grid Layout */}
-        <div className={styles.bentoGrid}>
-          
-          {/* Bento Card 1: Interactive Skills Console (Span 2 Cols, 2 Rows) */}
-          <div className={`${styles.bentoCard} ${styles.spanTwoCols} ${styles.spanTwoRows}`}>
-            <div className={styles.cardHeader}>
-              <div className={styles.headerLeft}>
-                <Terminal size={18} className={styles.accentRed} />
-                <h3 className={styles.bentoCardTitle}>Skills Console</h3>
+        {apiError ? (
+          <div className={styles.apiOfflineMessage}>
+            <AlertTriangle size={32} className={styles.errorIcon} />
+            <span className={styles.errorTitle}>[ SYSTEM LINK ERROR: OFFLINE SKILLS TELEMETRY ]</span>
+            <p className={styles.errorDescription}>
+              Failed to connect to the portfolio API gateway server. Please ensure the backend services are actively running.
+            </p>
+          </div>
+        ) : (
+          <div className={styles.bentoGrid}>
+            
+            {/* Bento Card 1: Interactive Skills Console (Span 2 Cols, 2 Rows) */}
+            <div className={`${styles.bentoCard} ${styles.spanTwoCols} ${styles.spanTwoRows}`}>
+              <div className={styles.cardHeader}>
+                <div className={styles.headerLeft}>
+                  <Terminal size={18} className={styles.accentRed} />
+                  <h3 className={styles.bentoCardTitle}>Skills Console</h3>
+                </div>
+                
+                {/* Category Selector Tabs */}
+                <div className={styles.tabContainer}>
+                  {skillsData.map((categoryGroup, index) => (
+                    <button
+                      key={index}
+                      className={`${styles.tabBtn} ${activeCategory === index ? styles.activeTab : ''}`}
+                      onClick={() => setActiveCategory(index)}
+                    >
+                      {index === 0 ? "Frontend" : index === 1 ? "Backend & DB" : index === 2 ? "Tools" : "Others"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Dynamic Skills List Grid */}
+              <div className={styles.skillsBentoGrid}>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeCategory}
+                    className={styles.skillsActiveWrapper}
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="hidden"
+                  >
+                    {skillsData[activeCategory].items.map((skill, itemIndex) => {
+                      const currentLevel = skill.level;
+                      return (
+                        <motion.div
+                          key={skill.name}
+                          className={styles.bentoSkillItem}
+                          variants={itemVariants}
+                          style={{ '--brand-color': skill.color }}
+                        >
+                          <div className={styles.skillHeaderRow}>
+                            <div className={styles.iconWrapper}>
+                              {skill.icon}
+                            </div>
+                            <div className={styles.skillInfo}>
+                              <h4 className={styles.skillNameText}>{skill.name}</h4>
+                              <p className={styles.skillDescText}>{skill.desc}</p>
+                            </div>
+                          </div>
+
+                          {/* Custom Radial Circular Gauge */}
+                          <div className={styles.circularGaugeContainer}>
+                            <div className={styles.gaugeValue}>{currentLevel}%</div>
+                            <svg className={styles.circularProgress} viewBox="0 0 36 36">
+                              <path
+                                className={styles.circleBg}
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                              />
+                              <motion.path
+                                className={styles.circle}
+                                strokeDasharray={`${currentLevel}, 100`}
+                                d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                                initial={{ pathLength: 0 }}
+                                whileInView={{ pathLength: currentLevel / 100 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 1.2, ease: "easeOut", delay: 0.1 }}
+                                style={{ stroke: 'var(--brand-color)' }}
+                              />
+                            </svg>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Bento Card 2: Proficiency Balance Indicators (Span 1 Col, 1 Row) */}
+            <div className={styles.bentoCard}>
+              <div className={styles.cardHeader}>
+                <div className={styles.headerLeft}>
+                  <Activity size={18} className={styles.accentRed} />
+                  <h3 className={styles.bentoCardTitle}>Proficiency Balance</h3>
+                </div>
               </div>
               
-              {/* Category Selector Tabs */}
-              <div className={styles.tabContainer}>
-                {skillsData.map((categoryGroup, index) => (
-                  <button
-                    key={index}
-                    className={`${styles.tabBtn} ${activeCategory === index ? styles.activeTab : ''}`}
-                    onClick={() => setActiveCategory(index)}
-                  >
-                    {index === 0 ? "Frontend" : index === 1 ? "Backend & DB" : index === 2 ? "Tools" : "Others"}
-                  </button>
+              <div className={styles.balanceList}>
+                {categoryAverages.map((cat, idx) => (
+                  <div key={idx} className={styles.balanceItem}>
+                    <div className={styles.balanceMeta}>
+                      <cat.icon size={16} style={{ color: cat.color }} />
+                      <span className={styles.balanceName}>{cat.name}</span>
+                      <span className={styles.balanceVal}>{cat.level}%</span>
+                    </div>
+                    <div className={styles.balanceBarTrack}>
+                      <motion.div
+                        className={styles.balanceBarFill}
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${cat.level}%` }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.2, ease: "easeOut" }}
+                        style={{ background: cat.color, boxShadow: `0 0 8px ${cat.color}` }}
+                      />
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
 
-            {/* Dynamic Skills List Grid */}
-            <div className={styles.skillsBentoGrid}>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeCategory}
-                  className={styles.skillsActiveWrapper}
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="hidden"
-                >
-                  {skillsData[activeCategory].items.map((skill, itemIndex) => {
-                    const currentLevel = skill.level;
-                    return (
-                      <motion.div
-                        key={skill.name}
-                        className={styles.bentoSkillItem}
-                        variants={itemVariants}
-                        style={{ '--brand-color': skill.color }}
-                      >
-                        <div className={styles.skillHeaderRow}>
-                          <div className={styles.iconWrapper}>
-                            {skill.icon}
-                          </div>
-                          <div className={styles.skillInfo}>
-                            <h4 className={styles.skillNameText}>{skill.name}</h4>
-                            <p className={styles.skillDescText}>{skill.desc}</p>
-                          </div>
-                        </div>
-
-                        {/* Custom Radial Circular Gauge */}
-                        <div className={styles.circularGaugeContainer}>
-                          <div className={styles.gaugeValue}>{currentLevel}%</div>
-                          <svg className={styles.circularProgress} viewBox="0 0 36 36">
-                            <path
-                              className={styles.circleBg}
-                              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                            />
-                            <motion.path
-                              className={styles.circle}
-                              strokeDasharray={`${currentLevel}, 100`}
-                              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                              initial={{ pathLength: 0 }}
-                              whileInView={{ pathLength: currentLevel / 100 }}
-                              viewport={{ once: true }}
-                              transition={{ duration: 1.2, ease: "easeOut", delay: 0.1 }}
-                              style={{ stroke: 'var(--brand-color)' }}
-                            />
-                          </svg>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-
-          {/* Bento Card 2: Proficiency Balance Indicators (Span 1 Col, 1 Row) */}
-          <div className={styles.bentoCard}>
-            <div className={styles.cardHeader}>
-              <div className={styles.headerLeft}>
-                <Activity size={18} className={styles.accentRed} />
-                <h3 className={styles.bentoCardTitle}>Proficiency Balance</h3>
-              </div>
-            </div>
-            
-            <div className={styles.balanceList}>
-              {categoryAverages.map((cat, idx) => (
-                <div key={idx} className={styles.balanceItem}>
-                  <div className={styles.balanceMeta}>
-                    <cat.icon size={16} style={{ color: cat.color }} />
-                    <span className={styles.balanceName}>{cat.name}</span>
-                    <span className={styles.balanceVal}>{cat.level}%</span>
-                  </div>
-                  <div className={styles.balanceBarTrack}>
-                    <motion.div
-                      className={styles.balanceBarFill}
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${cat.level}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.2, ease: "easeOut" }}
-                      style={{ background: cat.color, boxShadow: `0 0 8px ${cat.color}` }}
-                    />
-                  </div>
+            {/* Bento Card 3: Key Competencies (Span 1 Col, 1 Row) */}
+            <div className={styles.bentoCard}>
+              <div className={styles.cardHeader}>
+                <div className={styles.headerLeft}>
+                  <Sparkles size={18} className={styles.accentRed} />
+                  <h3 className={styles.bentoCardTitle}>Competencies</h3>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          {/* Bento Card 3: Key Competencies (Span 1 Col, 1 Row) */}
-          <div className={styles.bentoCard}>
-            <div className={styles.cardHeader}>
-              <div className={styles.headerLeft}>
-                <Sparkles size={18} className={styles.accentRed} />
-                <h3 className={styles.bentoCardTitle}>Competencies</h3>
+              <div className={styles.competencyCloud}>
+                {["REST API Design", "JWT Authentication", "Git & Workflows", "Responsive Layouts", "Database Optimization", "UI/UX Prototyping", "Asynchronous Systems", "Clean Coding"].map((tag, idx) => (
+                  <div key={idx} className={styles.competencyBadge}>
+                    <CheckCircle size={10} className={styles.accentRed} />
+                    <span>{tag}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className={styles.competencyCloud}>
-              {["REST API Design", "JWT Authentication", "Git & Workflows", "Responsive Layouts", "Database Optimization", "UI/UX Prototyping", "Asynchronous Systems", "Clean Coding"].map((tag, idx) => (
-                <div key={idx} className={styles.competencyBadge}>
-                  <CheckCircle size={10} className={styles.accentRed} />
-                  <span>{tag}</span>
+            {/* Bento Card 4: Core Specialization Hub (Span 3 Cols, 1 Row) */}
+            <div className={`${styles.bentoCard} ${styles.spanThreeCols}`}>
+              <div className={styles.cardHeader}>
+                <div className={styles.headerLeft}>
+                  <Layers size={18} className={styles.accentRed} />
+                  <h3 className={styles.bentoCardTitle}>Core Architecture Specializations</h3>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          {/* Bento Card 4: Core Specialization Hub (Span 3 Cols, 1 Row) */}
-          <div className={`${styles.bentoCard} ${styles.spanThreeCols}`}>
-            <div className={styles.cardHeader}>
-              <div className={styles.headerLeft}>
-                <Layers size={18} className={styles.accentRed} />
-                <h3 className={styles.bentoCardTitle}>Core Architecture Specializations</h3>
+              <div className={styles.coreSpecsGrid}>
+                {coreSpecs.map((spec, idx) => (
+                  <div key={idx} className={styles.coreSpecItem} style={{ '--spec-color': spec.color }}>
+                    <div className={spec.color === '#61DAFB' ? styles.specDotCyan : spec.color === '#339933' ? styles.specDotGreen : styles.specDotMongo} />
+                    <div className={styles.specMeta}>
+                      <span className={styles.specSubtitle}>{spec.subtitle}</span>
+                      <h4 className={styles.specTitle}>{spec.title}</h4>
+                      <p className={styles.specDesc}>{spec.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <div className={styles.coreSpecsGrid}>
-              {coreSpecs.map((spec, idx) => (
-                <div key={idx} className={styles.coreSpecItem} style={{ '--spec-color': spec.color }}>
-                  <div className={spec.color === '#61DAFB' ? styles.specDotCyan : spec.color === '#339933' ? styles.specDotGreen : styles.specDotMongo} />
-                  <div className={styles.specMeta}>
-                    <span className={styles.specSubtitle}>{spec.subtitle}</span>
-                    <h4 className={styles.specTitle}>{spec.title}</h4>
-                    <p className={styles.specDesc}>{spec.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
-
-        </div>
+        )}
       </div>
     </section>
   );

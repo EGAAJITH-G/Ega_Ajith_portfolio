@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Folder, Star, GitFork, Globe } from 'lucide-react';
+import { Folder, Star, GitFork, Globe, AlertTriangle } from 'lucide-react';
 import { playClickSound } from '../../utils/soundUtils';
 import styles from './Projects.module.css';
 
@@ -22,6 +22,18 @@ const Projects = () => {
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedRepoName, setSelectedRepoName] = useState('');
   const [projectsList, setProjectsList] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
+  const [apiError, setApiError] = useState(false);
+
+  // Track window resize to toggle between repo viewer and normal cards on mobile
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 765);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Fetch projects from backend
   useEffect(() => {
@@ -32,136 +44,25 @@ const Projects = () => {
       })
       .then(data => {
         setProjectsList(data);
+        setApiError(false);
+        // Set the first active project as the default selected repo if exists
+        const activeDbProjects = data.filter(p => p.active);
+        if (activeDbProjects.length > 0) {
+          setSelectedRepoName(activeDbProjects[0].title);
+        }
       })
       .catch(err => {
-        console.log('[PROJECTS] Loading fallback static data.', err);
+        console.error('[PROJECTS] Error loading projects.', err);
+        setApiError(true);
       });
   }, []);
-
-  // All projects listed in the Repository Layout
-  const fallbackAllProjects = [
-    {
-      name: "Flower Shop",
-      subtitle: "Flower Shop / README.md",
-      stars: 34,
-      forks: 12,
-      language: "TypeScript 82%",
-      header: "Premium Flower Shop E-commerce",
-      desc: "A full-stack flower retail platform built with React, Node.js, and Stripe integration. Features high-resolution asset management and real-time inventory tracking.",
-      image: "/images/image.png",
-      tech: ["React", "Node.js", "Stripe", "MongoDB"],
-      demoLink: "#",
-      gitLink: "#"
-    },
-    {
-      name: "Vetri Flex",
-      subtitle: "Vetri Flex / README.md",
-      stars: 28,
-      forks: 8,
-      language: "JavaScript 95%",
-      header: "Premium Streaming Platform Interface",
-      desc: "A responsive streaming platform interface featuring advanced animations, custom carousels, and visual theme selection.",
-      image: "/images/proj-ai-terminal.png",
-      tech: ["React", "Framer Motion", "Tailwind CSS"],
-      demoLink: "#",
-      gitLink: "#"
-    },
-    {
-      name: "MERN Ecommerce",
-      subtitle: "MERN Ecommerce / README.md",
-      stars: 42,
-      forks: 15,
-      language: "JavaScript 76%",
-      header: "Full Stack MERN Shopping App",
-      desc: "Robust e-commerce store with user authentication, shopping cart state management, and administrative dashboard panel.",
-      image: "/images/proj-dashboard.png",
-      tech: ["MongoDB", "Express.js", "React", "Node.js"],
-      demoLink: "#",
-      gitLink: "#"
-    },
-    {
-      name: "AI Portfolio",
-      subtitle: "AI Portfolio / README.md",
-      stars: 50,
-      forks: 18,
-      language: "CSS 45%",
-      header: "Cinematic Developer Portfolio",
-      desc: "Interactive developer portfolio with Three.js particles, custom shader overlays, and premium layout typography.",
-      image: "/images/proj-nodes.png",
-      tech: ["React", "Three.js", "GSAP"],
-      demoLink: "#",
-      gitLink: "#"
-    }
-  ];
-
-  // Frontend specific projects (modern grid card design)
-  const fallbackFrontendProjects = [
-    {
-      title: "Vetri Flex",
-      desc: "A responsive streaming platform interface featuring advanced animations, custom carousels, and visual theme selection.",
-      image: "/images/proj-ai-terminal.png",
-      tech: ["React", "Framer Motion", "Tailwind CSS"],
-      glow: styles.cardCyan,
-      demoLink: "#",
-      gitLink: "#"
-    },
-    {
-      title: "AI Portfolio",
-      desc: "Interactive developer portfolio with Three.js particles, custom shader overlays, and premium layout typography.",
-      image: "/images/proj-nodes.png",
-      tech: ["React", "Three.js", "GSAP"],
-      glow: styles.cardViolet,
-      demoLink: "#",
-      gitLink: "#"
-    },
-    {
-      title: "SaaS Landing Page",
-      desc: "Clean, high-converting product page featuring interactive price toggles, testimonial carousels, and smooth scroll reveals.",
-      image: "/images/proj-dashboard.png",
-      tech: ["React", "CSS Modules", "Framer Motion"],
-      glow: styles.cardPink,
-      demoLink: "#",
-      gitLink: "#"
-    }
-  ];
-
-  // Fullstack specific projects (modern grid card design)
-  const fallbackFullstackProjects = [
-    {
-      title: "Flower Shop",
-      desc: "A full-stack flower retail platform built with React, Node.js, and Stripe integration. Features high-resolution asset management and real-time inventory tracking.",
-      image: "/images/image.png",
-      tech: ["React", "Node.js", "Stripe", "MongoDB"],
-      glow: styles.cardCyan,
-      demoLink: "#",
-      gitLink: "#"
-    },
-    {
-      title: "MERN Ecommerce",
-      desc: "Robust e-commerce store with user authentication, shopping cart state management, and administrative dashboard panel.",
-      image: "/images/proj-dashboard.png",
-      tech: ["MongoDB", "Express.js", "React", "Node.js"],
-      glow: styles.cardViolet,
-      demoLink: "#",
-      gitLink: "#"
-    },
-    {
-      title: "Realtime Chat Console",
-      desc: "WebSockets-powered instant messaging app featuring room configurations, active status signals, and message caching.",
-      image: "/images/proj-nodes.png",
-      tech: ["React", "Node.js", "Socket.io", "MongoDB"],
-      glow: styles.cardPink,
-      demoLink: "#",
-      gitLink: "#"
-    }
-  ];
 
   const mapped = useMemo(() => {
     if (projectsList.length === 0) {
       return {
-        all: fallbackAllProjects,
-        frontend: fallbackFrontendProjects,
-        fullstack: fallbackFullstackProjects
+        all: [],
+        frontend: [],
+        fullstack: []
       };
     }
 
@@ -178,7 +79,10 @@ const Projects = () => {
       image: p.image || "/images/image.png",
       tech: p.tags,
       demoLink: p.live || "#",
-      gitLink: p.github || "#"
+      gitLink: p.github || "#",
+      appType: p.appType || "",
+      workingStatus: p.workingStatus || "",
+      imageAlign: p.imageAlign || "top"
     }));
 
     const frontendMapped = activeDbProjects
@@ -190,7 +94,10 @@ const Projects = () => {
         tech: p.tags,
         glow: idx % 3 === 0 ? styles.cardCyan : idx % 3 === 1 ? styles.cardViolet : styles.cardPink,
         demoLink: p.live || "#",
-        gitLink: p.github || "#"
+        gitLink: p.github || "#",
+        appType: p.appType || "",
+        workingStatus: p.workingStatus || "",
+        imageAlign: p.imageAlign || "top"
       }));
 
     const fullstackMapped = activeDbProjects
@@ -202,7 +109,10 @@ const Projects = () => {
         tech: p.tags,
         glow: idx % 3 === 0 ? styles.cardCyan : idx % 3 === 1 ? styles.cardViolet : styles.cardPink,
         demoLink: p.live || "#",
-        gitLink: p.github || "#"
+        gitLink: p.github || "#",
+        appType: p.appType || "",
+        workingStatus: p.workingStatus || "",
+        imageAlign: p.imageAlign || "top"
       }));
 
     return {
@@ -210,7 +120,7 @@ const Projects = () => {
       frontend: frontendMapped,
       fullstack: fullstackMapped
     };
-  }, [projectsList, fallbackAllProjects, fallbackFrontendProjects, fallbackFullstackProjects]);
+  }, [projectsList]);
 
   const allProjects = mapped.all;
   const frontendProjects = mapped.frontend;
@@ -255,7 +165,17 @@ const Projects = () => {
           <h2 className="section-title">Projects Console</h2>
         </div>
 
-        {/* Filter Navigation Tabs */}
+        {apiError ? (
+          <div className={styles.apiOfflineMessage}>
+            <AlertTriangle size={32} className={styles.errorIcon} />
+            <span className={styles.errorTitle}>[ SYSTEM LINK ERROR: OFFLINE DIRECTORY TELEMETRY ]</span>
+            <p className={styles.errorDescription}>
+              Failed to connect to the portfolio API gateway server. Please ensure the backend services are actively running.
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* Filter Navigation Tabs */}
         <div className={styles.filterTabs}>
           <button
             className={`${styles.tabBtn} ${activeFilter === 'all' ? styles.activeTab : ''}`}
@@ -280,7 +200,7 @@ const Projects = () => {
         {/* Dynamic Display Area */}
         <div className={styles.displayArea}>
           <AnimatePresence mode="wait">
-            {activeFilter === 'all' ? (
+            {activeFilter === 'all' && !isMobile ? (
               /* GitHub-Style Repository Viewer Layout */
               <motion.div
                 key="repo-viewer"
@@ -322,7 +242,7 @@ const Projects = () => {
                 {/* Right Side: README Detail Panel */}
                 <div className={styles.readmePanelColumn}>
                   <div className={styles.readmeCard}>
-                    {/* Readme Card Top Bar */}
+                     {/* Readme Card Top Bar */}
                     <div className={styles.readmeTopBar}>
                       <span className={styles.readmePath}>{currentRepo.subtitle}</span>
                       <div className={styles.readmeMeta}>
@@ -334,13 +254,24 @@ const Projects = () => {
                           <GitFork size={14} className={styles.forkIcon} />
                           <span>{currentRepo.forks}</span>
                         </div>
-                        <span className={styles.languageText}>{currentRepo.language}</span>
+                        <span className={styles.languageText}>{currentRepo.appType || currentRepo.language}</span>
                       </div>
                     </div>
 
                     {/* Readme Card Main Content */}
                     <div className={styles.readmeContent}>
-                      <h2 className={styles.readmeHeaderTitle}>{currentRepo.header}</h2>
+                      <h2 className={styles.readmeHeaderTitle}>
+                        {currentRepo.header}
+                        {currentRepo.workingStatus && (
+                          <span className={`${styles.statusBadge} ${
+                            currentRepo.workingStatus === 'Live Project' ? styles.statusLive :
+                            currentRepo.workingStatus === 'Current Project' ? styles.statusCurrent :
+                            styles.statusFinished
+                          }`}>
+                            {currentRepo.workingStatus}
+                          </span>
+                        )}
+                      </h2>
                       <p className={styles.readmeDescription}>{currentRepo.desc}</p>
 
                       {/* Image Viewer */}
@@ -393,7 +324,7 @@ const Projects = () => {
                 </div>
               </motion.div>
             ) : (
-              /* Modern Grid Card Layout for Frontend & Fullstack */
+              /* Modern Grid Card Layout for Frontend, Fullstack, and Mobile 'All' View */
               <motion.div
                 key={activeFilter}
                 className={styles.cardsGrid}
@@ -402,10 +333,13 @@ const Projects = () => {
                 animate="visible"
                 exit="hidden"
               >
-                {(activeFilter === 'frontend' ? frontendProjects : fullstackProjects).map((project, index) => (
+                {(activeFilter === 'all'
+                  ? allProjects
+                  : (activeFilter === 'frontend' ? frontendProjects : fullstackProjects)
+                ).map((project, index) => (
                   <motion.div
                     key={index}
-                    className={`${styles.premiumProjectCard} ${project.glow}`}
+                    className={`${styles.premiumProjectCard} ${project.glow || (index % 3 === 0 ? styles.cardCyan : index % 3 === 1 ? styles.cardViolet : styles.cardPink)}`}
                     variants={cardVariants}
                     whileHover={{ y: -6 }}
                   >
@@ -414,22 +348,34 @@ const Projects = () => {
                       <div className={styles.cardImageOverlay} />
                       <img
                         src={project.image}
-                        alt={project.title}
+                        alt={project.title || project.name}
                         className={styles.cardProjectImage}
                         onError={(e) => {
                           e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80';
                         }}
                       />
+                      {project.workingStatus && (
+                        <span className={`${styles.statusBadge} ${styles.imageStatusBadge} ${
+                          project.workingStatus === 'Live Project' ? styles.statusLive :
+                          project.workingStatus === 'Current Project' ? styles.statusCurrent :
+                          styles.statusFinished
+                        }`}>
+                          {project.workingStatus}
+                        </span>
+                      )}
                     </div>
 
                     {/* Card Content Details */}
                     <div className={styles.cardDetails}>
-                      <h3 className={styles.cardProjectTitle}>{project.title}</h3>
+                      <h3 className={styles.cardProjectTitle}>
+                        {project.title || project.name}
+                        {project.appType && <span className={styles.appTypeBadge}>{project.appType}</span>}
+                      </h3>
                       <p className={styles.cardProjectDesc}>{project.desc}</p>
 
                       {/* Tech Tags */}
                       <div className={styles.cardTechStack}>
-                        {project.tech.map((tag, idx) => (
+                        {(project.tech || []).map((tag, idx) => (
                           <span key={idx} className={styles.cardTechTag}>
                             {tag}
                           </span>
@@ -465,12 +411,15 @@ const Projects = () => {
               </motion.div>
             )}
           </AnimatePresence>
-          {activeFilter !== 'all' && (activeFilter === 'frontend' ? frontendProjects : fullstackProjects).length === 0 && (
+          {((activeFilter === 'all' && isMobile && allProjects.length === 0) ||
+            (activeFilter !== 'all' && (activeFilter === 'frontend' ? frontendProjects : fullstackProjects).length === 0)) && (
             <div className={styles.noResultsTextGrid}>
               [ NO MATCHING PROJECTS IN THIS VIEW ]
             </div>
           )}
         </div>
+      </>
+    )}
       </div>
     </section>
   );

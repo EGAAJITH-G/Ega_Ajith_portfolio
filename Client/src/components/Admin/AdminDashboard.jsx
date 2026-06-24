@@ -22,6 +22,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import styles from './AdminDashboard.module.css';
+import { compressBase64Image } from '../../utils/imageCompressor';
 
 const getSVGDetails = (input) => {
   const trimmed = (input || '').trim();
@@ -219,7 +220,10 @@ const AdminDashboard = () => {
     github: '',
     live: '',
     image: '',
-    active: true
+    active: true,
+    appType: '',
+    workingStatus: '',
+    imageAlign: 'top'
   });
   const [tempTag, setTempTag] = useState('');
   const [batchInput, setBatchInput] = useState('');
@@ -573,19 +577,19 @@ const AdminDashboard = () => {
       if (res.ok) {
         const data = await res.json();
         setMonitorData(data);
-        
+
         if (!isConsolePaused) {
           const methods = ['GET', 'POST', 'PUT', 'DELETE'];
           const urls = ['/api/projects', '/api/skills', '/api/messages', '/api/status', '/api/auth/verify', '/api/analytics/monitor'];
           const randMethod = methods[Math.floor(Math.random() * methods.length)];
           const randUrl = urls[Math.floor(Math.random() * urls.length)];
           const randLatency = Math.floor(Math.random() * 25) + 3;
-          
+
           setLiveApiRequests(prev => [
             { method: randMethod, url: randUrl, status: 200, latency: `${randLatency}ms`, time: 'Just now' },
             ...prev.slice(0, 5)
           ]);
-          
+
           const sysLogs = [
             `[SYS] CPU core load stabilized.`,
             `[SYS] Node V8 engine heap usage: ${data.server.nodeUsedRamMB}MB`,
@@ -597,7 +601,7 @@ const AdminDashboard = () => {
           ];
           const randLog = sysLogs[Math.floor(Math.random() * sysLogs.length)];
           const logType = randLog.startsWith('[SYS]') ? 'SYS' : randLog.startsWith('[DB]') ? 'DB' : 'TRAFFIC';
-          
+
           setMonitorLogs(prev => [
             ...prev,
             { type: logType, message: randLog }
@@ -732,7 +736,10 @@ const AdminDashboard = () => {
       github: p.github,
       live: p.live,
       image: p.image || '',
-      active: p.active
+      active: p.active,
+      appType: p.appType || '',
+      workingStatus: p.workingStatus || '',
+      imageAlign: p.imageAlign || 'top'
     });
   };
 
@@ -746,7 +753,10 @@ const AdminDashboard = () => {
       github: '',
       live: '',
       image: '',
-      active: true
+      active: true,
+      appType: '',
+      workingStatus: '',
+      imageAlign: 'top'
     });
   };
 
@@ -760,9 +770,10 @@ const AdminDashboard = () => {
     }
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setProjectForm(prev => ({ ...prev, image: reader.result }));
-      showNotify('Image cached in buffer state.');
+    reader.onloadend = async () => {
+      const compressed = await compressBase64Image(reader.result);
+      setProjectForm(prev => ({ ...prev, image: compressed }));
+      showNotify('Image cached and compressed in buffer state.');
     };
     reader.readAsDataURL(file);
   };
@@ -961,9 +972,10 @@ const AdminDashboard = () => {
     }
 
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setCertForm(prev => ({ ...prev, image: reader.result }));
-      showNotify('Certification image cached in buffer state.');
+    reader.onloadend = async () => {
+      const compressed = await compressBase64Image(reader.result);
+      setCertForm(prev => ({ ...prev, image: compressed }));
+      showNotify('Certification image cached and compressed in buffer state.');
     };
     reader.readAsDataURL(file);
   };
@@ -1137,23 +1149,23 @@ const AdminDashboard = () => {
               <div className={styles.sidebarBrand}>
                 {/* Custom glowing SVG logo */}
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" className={styles.sidebarBrandLogo}>
-                  <polygon 
-                    points="12,2 22,8 22,18 12,24 2,18 2,8" 
-                    stroke={theme === 'light' ? '#ff1a1a' : '#00f5ff'} 
-                    strokeWidth="2" 
+                  <polygon
+                    points="12,2 22,8 22,18 12,24 2,18 2,8"
+                    stroke={theme === 'light' ? '#ff1a1a' : '#00f5ff'}
+                    strokeWidth="2"
                     fill={theme === 'light' ? 'rgba(255, 26, 26, 0.12)' : 'rgba(0, 245, 255, 0.12)'}
                     style={{ filter: theme === 'light' ? 'drop-shadow(0 0 6px rgba(255, 26, 26, 0.6))' : 'drop-shadow(0 0 6px rgba(0, 245, 255, 0.6))' }}
                   />
-                  <polygon 
-                    points="12,6 18,10 18,16 12,20 6,16 6,10" 
+                  <polygon
+                    points="12,6 18,10 18,16 12,20 6,16 6,10"
                     fill={theme === 'light' ? 'rgba(255, 26, 26, 0.3)' : 'rgba(138, 43, 226, 0.3)'}
                   />
-                  <text 
-                    x="12" 
-                    y="15.5" 
-                    textAnchor="middle" 
-                    fontSize="9" 
-                    fontWeight="900" 
+                  <text
+                    x="12"
+                    y="15.5"
+                    textAnchor="middle"
+                    fontSize="9"
+                    fontWeight="900"
                     fill="#ffffff"
                     fontFamily="'Orbitron', sans-serif"
                   >
@@ -1243,26 +1255,26 @@ const AdminDashboard = () => {
           <div className={styles.statusBar}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flexWrap: 'wrap' }}>
               <div className={styles.statusIndicator}>
-                <div 
-                  className={styles.statusPulse} 
-                  style={{ 
-                    backgroundColor: clientStatus === 'ONLINE' ? '#10b981' : '#ef4444', 
-                    boxShadow: clientStatus === 'ONLINE' ? '0 0 10px #10b981' : '0 0 10px #ef4444' 
-                  }} 
+                <div
+                  className={styles.statusPulse}
+                  style={{
+                    backgroundColor: clientStatus === 'ONLINE' ? '#10b981' : '#ef4444',
+                    boxShadow: clientStatus === 'ONLINE' ? '0 0 10px #10b981' : '0 0 10px #ef4444'
+                  }}
                 />
                 <span style={{ fontSize: '0.72rem', fontWeight: '700', color: theme === 'light' ? '#475569' : '#8e8ea8' }}>CLIENT: </span>
                 <span style={{ color: clientStatus === 'ONLINE' ? '#10b981' : '#ef4444', fontWeight: '800', fontSize: '0.72rem' }}>{clientStatus}</span>
               </div>
-              
+
               <div style={{ width: '1px', height: '14px', backgroundColor: theme === 'light' ? '#cbd5e1' : 'rgba(255,255,255,0.15)' }} />
 
               <div className={styles.statusIndicator}>
-                <div 
-                  className={styles.statusPulse} 
-                  style={{ 
-                    backgroundColor: serverStatus === 'ONLINE' ? '#10b981' : '#ef4444', 
-                    boxShadow: serverStatus === 'ONLINE' ? '0 0 10px #10b981' : '0 0 10px #ef4444' 
-                  }} 
+                <div
+                  className={styles.statusPulse}
+                  style={{
+                    backgroundColor: serverStatus === 'ONLINE' ? '#10b981' : '#ef4444',
+                    boxShadow: serverStatus === 'ONLINE' ? '0 0 10px #10b981' : '0 0 10px #ef4444'
+                  }}
                 />
                 <span style={{ fontSize: '0.72rem', fontWeight: '700', color: theme === 'light' ? '#475569' : '#8e8ea8' }}>SERVER: </span>
                 <span style={{ color: serverStatus === 'ONLINE' ? '#10b981' : '#ef4444', fontWeight: '800', fontSize: '0.72rem' }}>{serverStatus}</span>
@@ -1271,12 +1283,12 @@ const AdminDashboard = () => {
               <div style={{ width: '1px', height: '14px', backgroundColor: theme === 'light' ? '#cbd5e1' : 'rgba(255,255,255,0.15)' }} />
 
               <div className={styles.statusIndicator}>
-                <div 
-                  className={styles.statusPulse} 
-                  style={{ 
-                    backgroundColor: dbStatus === 'CONNECTED' ? '#10b981' : '#ef4444', 
-                    boxShadow: dbStatus === 'CONNECTED' ? '0 0 10px #10b981' : '0 0 10px #ef4444' 
-                  }} 
+                <div
+                  className={styles.statusPulse}
+                  style={{
+                    backgroundColor: dbStatus === 'CONNECTED' ? '#10b981' : '#ef4444',
+                    boxShadow: dbStatus === 'CONNECTED' ? '0 0 10px #10b981' : '0 0 10px #ef4444'
+                  }}
                 />
                 <span style={{ fontSize: '0.72rem', fontWeight: '700', color: theme === 'light' ? '#475569' : '#8e8ea8' }}>DATABASE: </span>
                 <span style={{ color: dbStatus === 'CONNECTED' ? '#10b981' : '#ef4444', fontWeight: '800', fontSize: '0.72rem' }}>
@@ -1418,7 +1430,7 @@ const AdminDashboard = () => {
 
                 {/* System Handshake Ledger Panel (Stand-alone Card) */}
                 <div className={styles.telemetryPanel}>
-                  <span 
+                  <span
                     className={`${styles.panelTag} ${clientStatus === 'ONLINE' && serverStatus === 'ONLINE' && dbStatus === 'CONNECTED' ? styles.tagGreen : styles.tagPink}`}
                   >
                     {clientStatus === 'ONLINE' && serverStatus === 'ONLINE' && dbStatus === 'CONNECTED' ? 'SECURED' : 'CHECK STATUS'}
@@ -1555,29 +1567,29 @@ const AdminDashboard = () => {
                           if (v.userAgent.includes('Mobi') || v.userAgent.includes('Android')) device = 'Mobile';
 
                           return (
-                            <div key={i} style={{ 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              gap: '10px', 
-                              fontSize: '0.65rem', 
-                              color: theme === 'light' ? '#475569' : '#8e8ea8', 
-                              background: theme === 'light' ? '#f8fafc' : 'rgba(255,255,255,0.01)', 
-                              border: theme === 'light' ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.03)', 
-                              borderRadius: '4px', 
+                            <div key={i} style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '10px',
+                              fontSize: '0.65rem',
+                              color: theme === 'light' ? '#475569' : '#8e8ea8',
+                              background: theme === 'light' ? '#f8fafc' : 'rgba(255,255,255,0.01)',
+                              border: theme === 'light' ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.03)',
+                              borderRadius: '4px',
                               padding: '6px 8px',
                               justifyContent: 'space-between'
                             }}>
-                              <span style={{ 
-                                color: theme === 'light' ? '#0f172a' : '#ffffff', 
-                                fontFamily: 'monospace', 
+                              <span style={{
+                                color: theme === 'light' ? '#0f172a' : '#ffffff',
+                                fontFamily: 'monospace',
                                 fontWeight: 'bold',
                                 minWidth: '95px',
-                                flexShrink: 0 
+                                flexShrink: 0
                               }}>
                                 {v.ip === '::1' || v.ip === '127.0.0.1' || v.ip.includes('::ffff:127.0.0.1') ? 'Localhost' : v.ip.length > 15 ? v.ip.substring(0, 12) + '...' : v.ip}
                               </span>
-                              <span style={{ 
-                                color: theme === 'light' ? '#0284c7' : '#00f5ff', 
+                              <span style={{
+                                color: theme === 'light' ? '#0284c7' : '#00f5ff',
                                 fontWeight: 'bold',
                                 flex: '1',
                                 textAlign: 'left',
@@ -1587,8 +1599,8 @@ const AdminDashboard = () => {
                               }} title={`${browser} (${device})`}>
                                 {browser} ({device})
                               </span>
-                              <span style={{ 
-                                fontSize: '0.6rem', 
+                              <span style={{
+                                fontSize: '0.6rem',
                                 color: theme === 'light' ? '#64748b' : '#8e8ea8',
                                 flexShrink: 0,
                                 textAlign: 'right'
@@ -1826,6 +1838,35 @@ const AdminDashboard = () => {
                           </div>
                         </div>
 
+                        <div className={styles.formRow}>
+                          <div style={{ flex: 1 }}>
+                            <label className={styles.formLabel}>Application Type</label>
+                            <input
+                              type="text"
+                              value={projectForm.appType || ''}
+                              onChange={(e) => setProjectForm({ ...projectForm, appType: e.target.value })}
+                              placeholder="e.g. E-Commerce Web Application"
+                              className={styles.formInput}
+                            />
+                          </div>
+                        </div>
+
+                        <div className={styles.formRow}>
+                          <div style={{ flex: 1 }}>
+                            <label className={styles.formLabel}>Working Status Badge</label>
+                            <select
+                              value={projectForm.workingStatus || ''}
+                              onChange={(e) => setProjectForm({ ...projectForm, workingStatus: e.target.value })}
+                              className={styles.formInput}
+                            >
+                              <option value="">None (No Status Badge)</option>
+                              <option value="Live Project">Live Project</option>
+                              <option value="Current Project">Current Project</option>
+                              <option value="Finished Project">Finished Project</option>
+                            </select>
+                          </div>
+                        </div>
+
                         <div>
                           <label className={styles.formLabel}>Description</label>
                           <textarea
@@ -1965,7 +2006,7 @@ const AdminDashboard = () => {
                           marginTop: '20px'
                         }}
                       >
-                        <div className={styles.previewImageHeader} style={{ backgroundImage: projectForm.image ? `url(${projectForm.image})` : 'none' }}>
+                         <div className={styles.previewImageHeader} style={{ backgroundImage: projectForm.image ? `url(${projectForm.image})` : 'none' }}>
                           <div
                             className={styles.previewActiveBadge}
                             style={{
@@ -1976,6 +2017,15 @@ const AdminDashboard = () => {
                             <div className={styles.previewActiveDot} style={{ background: projectForm.active ? '#27c93f' : '#8e8ea8' }}></div>
                             <span>{projectForm.active ? 'ACTIVE' : 'OFFLINE'}</span>
                           </div>
+                          {projectForm.workingStatus && (
+                            <span className={`${styles.previewStatusBadge} ${styles.previewImageStatusBadge} ${
+                              projectForm.workingStatus === 'Live Project' ? styles.previewStatusLive :
+                              projectForm.workingStatus === 'Current Project' ? styles.previewStatusCurrent :
+                              styles.previewStatusFinished
+                            }`}>
+                              {projectForm.workingStatus}
+                            </span>
+                          )}
                           {!projectForm.image && (
                             <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.75rem' }}>
                               [ {projectForm.title ? projectForm.title.toLowerCase().replace(/\s+/g, '-') : 'untitled'}.webp ]
@@ -1985,7 +2035,10 @@ const AdminDashboard = () => {
 
                         <div className={styles.previewCardDetails}>
                           <div className={styles.previewTitleRow}>
-                            <h4 className={styles.previewTitle}>{projectForm.title || 'Untitled Project'}</h4>
+                            <h4 className={styles.previewTitle}>
+                              {projectForm.title || 'Untitled Project'}
+                              {projectForm.appType && <span className={styles.appTypeBadge}>{projectForm.appType}</span>}
+                            </h4>
                             <span className={styles.previewCategory}>{projectForm.category.toUpperCase()}</span>
                           </div>
                           <p className={styles.previewDescription}>
@@ -2506,7 +2559,7 @@ const AdminDashboard = () => {
                       Security Gate
                     </span>
                   </div>
-                  
+
                   <form onSubmit={(e) => {
                     e.preventDefault();
                     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
@@ -2575,8 +2628,8 @@ const AdminDashboard = () => {
                         <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: theme === 'light' ? '#0f172a' : '#ffffff' }}>Simulation Mode</div>
                         <div style={{ fontSize: '0.65rem', color: theme === 'light' ? '#64748b' : '#8e8ea8', marginTop: '2px' }}>Simulate offline status gates</div>
                       </div>
-                      <div 
-                        className={styles.statusSwitchContainer} 
+                      <div
+                        className={styles.statusSwitchContainer}
                         onClick={() => {
                           const nextVal = !maintenanceMode;
                           setMaintenanceMode(nextVal);
@@ -2658,8 +2711,8 @@ const AdminDashboard = () => {
                         <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: theme === 'light' ? '#0f172a' : '#ffffff' }}>Public Site Offline</div>
                         <div style={{ fontSize: '0.65rem', color: theme === 'light' ? '#64748b' : '#8e8ea8', marginTop: '2px' }}>Take visitor site offline for updates</div>
                       </div>
-                      <div 
-                        className={styles.statusSwitchContainer} 
+                      <div
+                        className={styles.statusSwitchContainer}
                         onClick={() => toggleMaintenanceMode(!publicMaintenanceMode)}
                       >
                         <div className={`${styles.statusSwitch} ${publicMaintenanceMode ? styles.statusSwitchActive : ''}`}>
@@ -2694,8 +2747,8 @@ const AdminDashboard = () => {
                       <div>
                         <label className={styles.formLabel} style={{ fontSize: '0.65rem', marginBottom: '6px' }}>OFFLINE PROTOCOL TYPE</label>
                         <div style={{ display: 'flex', gap: '10px' }}>
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             onClick={() => setMaintenanceType('preset')}
                             style={{
                               flex: 1,
@@ -2712,8 +2765,8 @@ const AdminDashboard = () => {
                           >
                             PRESET DURATION
                           </button>
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             onClick={() => setMaintenanceType('custom')}
                             style={{
                               flex: 1,
@@ -2736,8 +2789,8 @@ const AdminDashboard = () => {
                       {maintenanceType === 'preset' ? (
                         <div>
                           <label className={styles.formLabel} style={{ fontSize: '0.65rem', marginBottom: '6px' }}>MAINTENANCE DURATION</label>
-                          <select 
-                            value={maintenanceDuration} 
+                          <select
+                            value={maintenanceDuration}
                             onChange={(e) => setMaintenanceDuration(Number(e.target.value))}
                             className={styles.formInput}
                             style={{ fontSize: '0.75rem', height: '38px' }}
@@ -2753,12 +2806,12 @@ const AdminDashboard = () => {
                       ) : (
                         <div>
                           <label className={styles.formLabel} style={{ fontSize: '0.65rem', marginBottom: '6px' }}>TARGET LAUNCH DATE & TIME</label>
-                          <input 
-                            type="datetime-local" 
+                          <input
+                            type="datetime-local"
                             value={customLaunchDate}
                             onChange={(e) => setCustomLaunchDate(e.target.value)}
                             className={styles.formInput}
-                            style={{ 
+                            style={{
                               fontSize: '0.75rem',
                               height: '38px',
                               colorScheme: theme === 'light' ? 'light' : 'dark'
@@ -2767,7 +2820,7 @@ const AdminDashboard = () => {
                         </div>
                       )}
                     </div>
-                    
+
                     <div style={{ fontSize: '0.7rem', color: theme === 'light' ? '#475569' : '#8e8ea8', lineHeight: '1.5', background: theme === 'light' ? '#f8fafc' : 'rgba(0,0,0,0.1)', padding: '12px', borderRadius: '6px', border: theme === 'light' ? '1px solid #cbd5e1' : '1px solid rgba(255,255,255,0.03)' }}>
                       <strong>Active State Protocol:</strong> Enabling this flag immediately diverts all landing page visitor traffic to a futuristic HUD stand-by screen while maintaining database connections and permitting administrator edits.
                     </div>
@@ -2789,7 +2842,7 @@ const AdminDashboard = () => {
                 <>
                   {/* Row 1: Server and Database Performance Metrics Grid */}
                   <div className={styles.monitorGrid} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px', marginBottom: '25px' }}>
-                    
+
                     {/* Col 1: Server Resource Usage & Details */}
                     <div className={styles.telemetryPanel} style={{ padding: '25px' }}>
                       <div className={styles.panelTitleContainer} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '12px' }}>
@@ -2804,13 +2857,13 @@ const AdminDashboard = () => {
                         <div style={{ textAlign: 'center', position: 'relative' }}>
                           <svg width="100" height="100" viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r="40" fill="transparent" stroke={theme === 'light' ? '#e2e8f0' : 'rgba(255,255,255,0.05)'} strokeWidth="8" />
-                            <circle 
-                              cx="50" 
-                              cy="50" 
-                              r="40" 
-                              fill="transparent" 
-                              stroke="#00f5ff" 
-                              strokeWidth="8" 
+                            <circle
+                              cx="50"
+                              cy="50"
+                              r="40"
+                              fill="transparent"
+                              stroke="#00f5ff"
+                              strokeWidth="8"
                               strokeDasharray={2 * Math.PI * 40}
                               strokeDashoffset={2 * Math.PI * 40 * (1 - monitorData.server.cpuUsagePct / 100)}
                               strokeLinecap="round"
@@ -2827,13 +2880,13 @@ const AdminDashboard = () => {
                         <div style={{ textAlign: 'center', position: 'relative' }}>
                           <svg width="100" height="100" viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r="40" fill="transparent" stroke={theme === 'light' ? '#e2e8f0' : 'rgba(255,255,255,0.05)'} strokeWidth="8" />
-                            <circle 
-                              cx="50" 
-                              cy="50" 
-                              r="40" 
-                              fill="transparent" 
-                              stroke="#ff4d8d" 
-                              strokeWidth="8" 
+                            <circle
+                              cx="50"
+                              cy="50"
+                              r="40"
+                              fill="transparent"
+                              stroke="#ff4d8d"
+                              strokeWidth="8"
                               strokeDasharray={2 * Math.PI * 40}
                               strokeDashoffset={2 * Math.PI * 40 * (1 - monitorData.server.ramUsagePct / 100)}
                               strokeLinecap="round"
@@ -2917,7 +2970,7 @@ const AdminDashboard = () => {
 
                   {/* Row 2: Live Requests Monitor and Full Interactive Log terminal */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.8fr', gap: '25px', alignItems: 'start' }}>
-                    
+
                     {/* Live Endpoint API Request Stream */}
                     <div className={styles.telemetryPanel} style={{ padding: '25px' }}>
                       <div className={styles.panelTitleContainer} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '12px' }}>
@@ -2926,25 +2979,25 @@ const AdminDashboard = () => {
                           Active Gateway
                         </span>
                       </div>
-                      
+
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '15px' }}>
                         {liveApiRequests.map((reqItem, idx) => (
-                          <div 
-                            key={idx} 
-                            style={{ 
-                              display: 'flex', 
-                              alignItems: 'center', 
-                              justifyContent: 'space-between', 
-                              background: theme === 'light' ? '#f8fafc' : 'rgba(0, 0, 0, 0.3)', 
-                              border: theme === 'light' ? '1px solid #cbd5e1' : '1px solid rgba(255, 255, 255, 0.04)', 
-                              padding: '10px 12px', 
-                              borderRadius: '8px', 
-                              fontSize: '0.72rem' 
+                          <div
+                            key={idx}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              background: theme === 'light' ? '#f8fafc' : 'rgba(0, 0, 0, 0.3)',
+                              border: theme === 'light' ? '1px solid #cbd5e1' : '1px solid rgba(255, 255, 255, 0.04)',
+                              padding: '10px 12px',
+                              borderRadius: '8px',
+                              fontSize: '0.72rem'
                             }}
                           >
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              <span style={{ 
-                                color: reqItem.method === 'GET' ? '#00f5ff' : reqItem.method === 'POST' ? '#ff4d8d' : '#eab308', 
+                              <span style={{
+                                color: reqItem.method === 'GET' ? '#00f5ff' : reqItem.method === 'POST' ? '#ff4d8d' : '#eab308',
                                 fontWeight: '900',
                                 fontFamily: 'monospace'
                               }}>
@@ -2971,8 +3024,8 @@ const AdminDashboard = () => {
                           <div style={{ width: '6px', height: '6px', backgroundColor: isConsolePaused ? '#eab308' : '#27c93f', borderRadius: '50%', boxShadow: isConsolePaused ? '0 0 8px #eab308' : '0 0 8px #27c93f', display: 'inline-block' }} />
                         </div>
                         <div style={{ display: 'flex', gap: '8px' }}>
-                          <button 
-                            className={styles.ctrlBtn} 
+                          <button
+                            className={styles.ctrlBtn}
                             style={{ padding: '4px 10px', fontSize: '0.62rem', borderColor: isConsolePaused ? '#00f5ff' : '#cbd5e1', color: isConsolePaused ? '#00f5ff' : 'inherit' }}
                             onClick={() => setIsConsolePaused(!isConsolePaused)}
                           >
@@ -2989,7 +3042,7 @@ const AdminDashboard = () => {
                             <button
                               key={cat}
                               onClick={() => setConsoleFilter(cat)}
-                              style={{ 
+                              style={{
                                 background: consoleFilter === cat ? (theme === 'light' ? '#64748b' : 'rgba(255, 255, 255, 0.08)') : 'transparent',
                                 border: '1px solid ' + (consoleFilter === cat ? (theme === 'light' ? '#64748b' : 'rgba(255, 255, 255, 0.2)') : 'rgba(255, 255, 255, 0.05)'),
                                 color: consoleFilter === cat ? '#ffffff' : (theme === 'light' ? '#475569' : '#8e8ea8'),
@@ -3023,7 +3076,7 @@ const AdminDashboard = () => {
                             .filter(log => consoleFilter === 'ALL' || log.type === consoleFilter)
                             .filter(log => consoleSearch === '' || log.message.toLowerCase().includes(consoleSearch.toLowerCase()))
                             .map((log, idx) => (
-                              <div key={idx} style={{ 
+                              <div key={idx} style={{
                                 color: log.type === 'ERR' ? '#ff3b7e' : log.type === 'SYS' ? '#38bdf8' : log.type === 'DB' ? '#c18fff' : '#10b981',
                                 fontFamily: 'monospace',
                                 fontSize: '0.68rem',
@@ -3039,7 +3092,7 @@ const AdminDashboard = () => {
 
                   {/* Diagnostics Grid: Client, Server, Database terminals */}
                   <div className={styles.diagnosticsGrid} style={{ marginTop: '25px' }}>
-                    
+
                     {/* Card 1: Client Node Terminal */}
                     <div className={styles.telemetryPanel} style={{ padding: '25px' }}>
                       <div className={styles.panelTitleContainer} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '12px' }}>
@@ -3176,18 +3229,18 @@ const AdminDashboard = () => {
                           <AlertTriangle size={16} style={{ color: monitorData.errors && monitorData.errors.length > 0 ? '#ff3b7e' : '#10b981' }} />
                         </div>
                         <h3 className={styles.panelTitle} style={{ margin: 0 }}>Active Error Incident Diagnostics</h3>
-                        
+
                         {/* Pulsing Status Dot */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginLeft: '10px' }}>
-                          <span 
-                            className={monitorData.errors && monitorData.errors.length > 0 ? styles.pulseRed : styles.statusPulse} 
-                            style={{ 
-                              width: '8px', 
-                              height: '8px', 
-                              backgroundColor: monitorData.errors && monitorData.errors.length > 0 ? '#ff3b7e' : '#10b981', 
-                              borderRadius: '50%', 
-                              display: 'inline-block' 
-                            }} 
+                          <span
+                            className={monitorData.errors && monitorData.errors.length > 0 ? styles.pulseRed : styles.statusPulse}
+                            style={{
+                              width: '8px',
+                              height: '8px',
+                              backgroundColor: monitorData.errors && monitorData.errors.length > 0 ? '#ff3b7e' : '#10b981',
+                              borderRadius: '50%',
+                              display: 'inline-block'
+                            }}
                           />
                           <span style={{ fontSize: '0.65rem', fontWeight: 'bold', color: monitorData.errors && monitorData.errors.length > 0 ? '#ff3b7e' : '#10b981' }}>
                             {monitorData.errors && monitorData.errors.length > 0 ? `${monitorData.errors.length} INCIDENT(S) DETECTED` : 'SYSTEM STATUS STABLE'}
@@ -3197,8 +3250,8 @@ const AdminDashboard = () => {
 
                       {/* Clear Button */}
                       {monitorData.errors && monitorData.errors.length > 0 && (
-                        <button 
-                          className={styles.ctrlBtn} 
+                        <button
+                          className={styles.ctrlBtn}
                           style={{ padding: '6px 12px', borderColor: '#ff3b7e', color: '#ff3b7e' }}
                           onClick={clearErrorLedger}
                         >
@@ -3218,12 +3271,12 @@ const AdminDashboard = () => {
                             const errorDate = new Date(errItem.timestamp).toLocaleTimeString() + ' ' + new Date(errItem.timestamp).toLocaleDateString();
                             const isExpanded = expandedErrorIndex === idx;
                             return (
-                              <div 
-                                key={idx} 
-                                style={{ 
-                                  background: theme === 'light' ? '#fffafb' : 'rgba(255, 59, 126, 0.02)', 
-                                  border: '1.5px solid ' + (theme === 'light' ? '#fecdd3' : 'rgba(255, 59, 126, 0.15)'), 
-                                  borderRadius: '8px', 
+                              <div
+                                key={idx}
+                                style={{
+                                  background: theme === 'light' ? '#fffafb' : 'rgba(255, 59, 126, 0.02)',
+                                  border: '1.5px solid ' + (theme === 'light' ? '#fecdd3' : 'rgba(255, 59, 126, 0.15)'),
+                                  borderRadius: '8px',
                                   padding: '15px',
                                   display: 'flex',
                                   flexDirection: 'column',
@@ -3232,9 +3285,9 @@ const AdminDashboard = () => {
                               >
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                                    <span style={{ 
-                                      background: 'rgba(255, 59, 126, 0.12)', 
-                                      border: '1px solid #ff3b7e', 
+                                    <span style={{
+                                      background: 'rgba(255, 59, 126, 0.12)',
+                                      border: '1px solid #ff3b7e',
                                       color: '#ff3b7e',
                                       fontSize: '0.62rem',
                                       fontWeight: '900',
@@ -3244,9 +3297,9 @@ const AdminDashboard = () => {
                                     }}>
                                       {errItem.method}
                                     </span>
-                                    <span style={{ 
-                                      color: theme === 'light' ? '#0f172a' : '#ffffff', 
-                                      fontWeight: 'bold', 
+                                    <span style={{
+                                      color: theme === 'light' ? '#0f172a' : '#ffffff',
+                                      fontWeight: 'bold',
                                       fontSize: '0.78rem',
                                       fontFamily: 'monospace'
                                     }}>
@@ -3258,9 +3311,9 @@ const AdminDashboard = () => {
                                   </span>
                                 </div>
 
-                                <div style={{ 
-                                  color: theme === 'light' ? '#991b1b' : '#ff4d8d', 
-                                  fontSize: '0.78rem', 
+                                <div style={{
+                                  color: theme === 'light' ? '#991b1b' : '#ff4d8d',
+                                  fontSize: '0.78rem',
                                   fontWeight: 'bold',
                                   fontFamily: 'sans-serif'
                                 }}>
@@ -3268,11 +3321,11 @@ const AdminDashboard = () => {
                                 </div>
 
                                 <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                  <button 
-                                    className={styles.ctrlBtn} 
-                                    style={{ 
-                                      fontSize: '0.62rem', 
-                                      padding: '4px 8px', 
+                                  <button
+                                    className={styles.ctrlBtn}
+                                    style={{
+                                      fontSize: '0.62rem',
+                                      padding: '4px 8px',
                                       borderColor: isExpanded ? '#00f5ff' : 'rgba(255, 255, 255, 0.15)',
                                       color: isExpanded ? '#00f5ff' : 'inherit'
                                     }}

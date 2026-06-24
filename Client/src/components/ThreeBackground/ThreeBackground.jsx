@@ -32,7 +32,7 @@ const ThreeBackground = () => {
     const numSpokes = 10;
     const numRings = 8;
     const ringSpacing = 75;
-    
+
     // Central center node
     nodes.push({
       id: 0,
@@ -101,7 +101,7 @@ const ThreeBackground = () => {
       const ringStartId = 1 + ring * numSpokes;
       for (let spoke = 0; spoke < numSpokes; spoke++) {
         const currentId = ringStartId + spoke;
-        
+
         // 1. Concentric Ring connections: connect current to next spoke in same ring
         const nextSpokeId = ringStartId + ((spoke + 1) % numSpokes);
         if (!nodes[currentId].neighbors.includes(nextSpokeId)) {
@@ -165,11 +165,11 @@ const ThreeBackground = () => {
     // 1. Line Segments for Web Strands
     const linePositions = new Float32Array(connections.length * 2 * 3);
     const lineColors = new Float32Array(connections.length * 2 * 3);
-    
+
     // Setup lines attributes (thin red glowing lines)
     const baseLineColor = new THREE.Color('#ffffffff');
     const darkLineColor = new THREE.Color('#330000');
-    
+
     connections.forEach((conn, index) => {
       // Set line colors
       const isFromWeb = nodes[conn.from].isWeb && nodes[conn.to].isWeb;
@@ -178,7 +178,7 @@ const ThreeBackground = () => {
       lineColors[index * 6] = col.r;
       lineColors[index * 6 + 1] = col.g;
       lineColors[index * 6 + 2] = col.b;
-      
+
       lineColors[index * 6 + 3] = col.r;
       lineColors[index * 6 + 4] = col.g;
       lineColors[index * 6 + 5] = col.b;
@@ -202,7 +202,7 @@ const ThreeBackground = () => {
     // 2. Points for Node Intersections
     const pointPositions = new Float32Array(nodes.length * 3);
     const pointColors = new Float32Array(nodes.length * 3);
-    
+
     const nodeWebColor = new THREE.Color('#ff3333');
     const nodeRandColor = new THREE.Color('#ff0000');
 
@@ -303,7 +303,7 @@ const ThreeBackground = () => {
       // Project mouse client coordinates into scene coordinate bounds for node ripple
       const mx = (event.clientX / window.innerWidth) * 2 - 1;
       const my = -(event.clientY / window.innerHeight) * 2 + 1;
-      
+
       mouseRef.current.ndcX = mx;
       mouseRef.current.ndcY = my;
     };
@@ -330,7 +330,7 @@ const ThreeBackground = () => {
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-      
+
       const time = clock.getElapsedTime();
 
       // Slowly fade lines in when loaded
@@ -452,7 +452,7 @@ const ThreeBackground = () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
       cancelAnimationFrame(animationFrameId);
-      
+
       if (renderer && renderer.domElement && container) {
         container.removeChild(renderer.domElement);
       }

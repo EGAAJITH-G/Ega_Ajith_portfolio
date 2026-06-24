@@ -2,7 +2,7 @@
   height: 100vh;
   overflow: hidden;
   background-color: #050508;
-  background-image: 
+  background-image:
     linear-gradient(rgba(138, 43, 226, 0.015) 1px, transparent 1px),
     linear-gradient(90deg, rgba(138, 43, 226, 0.015) 1px, transparent 1px);
   background-size: 40px 40px;
@@ -21,6 +21,7 @@
     height: auto;
     overflow: visible;
   }
+
   .dashboardLayout {
     flex-direction: column;
     height: auto;
@@ -224,8 +225,18 @@
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(0.95); opacity: 0.7; }
-  50% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 15px #10b981; }
+
+  0%,
+  100% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+    box-shadow: 0 0 15px #10b981;
+  }
 }
 
 .statusText {
@@ -518,7 +529,8 @@
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.projectItem:hover, .projectItemSelected {
+.projectItem:hover,
+.projectItemSelected {
   border-color: #00f5ff;
   box-shadow: 0 0 15px rgba(0, 245, 255, 0.15);
   background: rgba(0, 245, 255, 0.04);
@@ -780,11 +792,98 @@
 }
 
 .previewTitle {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
   font-family: 'Inter', sans-serif;
   font-size: 0.9rem;
   color: #ffffff;
   font-weight: bold;
   letter-spacing: 0.5px;
+}
+
+.appTypeBadge {
+  display: inline-block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 245, 255, 0.25);
+  color: #00f5ff;
+  background: rgba(0, 245, 255, 0.05);
+  box-shadow: 0 0 8px rgba(0, 245, 255, 0.15);
+}
+
+/* New Preview Badge Styles */
+.previewStatusBadge {
+  display: inline-block;
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
+}
+
+.previewStatusLive {
+  border: 1px solid rgba(0, 255, 100, 0.3);
+  color: #00ff64;
+  background: rgba(0, 255, 100, 0.05);
+  text-shadow: 0 0 8px rgba(0, 255, 100, 0.3);
+}
+
+.previewStatusCurrent {
+  border: 1px solid rgba(255, 170, 0, 0.3);
+  color: #ffaa00;
+  background: rgba(255, 170, 0, 0.05);
+  text-shadow: 0 0 8px rgba(255, 170, 0, 0.3);
+}
+
+.previewStatusFinished {
+  border: 1px solid rgba(0, 150, 255, 0.3);
+  color: #0096ff;
+  background: rgba(0, 150, 255, 0.05);
+  text-shadow: 0 0 8px rgba(0, 150, 255, 0.3);
+}
+
+.previewImageStatusBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 4;
+  background: rgba(10, 10, 15, 0.85) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-radius: 12px !important;
+  padding: 4px 10px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Horizontal Preview Card Style */
+.previewCardHorizontal {
+  flex-direction: row-reverse !important;
+  height: 250px !important;
+}
+
+.previewCardHorizontal .previewImageHeader {
+  width: 45% !important;
+  height: 100% !important;
+  margin-bottom: 0 !important;
+  border-radius: 0 16px 16px 0 !important;
+  border-bottom: none !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.04) !important;
+}
+
+.previewCardHorizontal .previewCardDetails {
+  width: 55% !important;
+  height: 100% !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .previewCategory {
@@ -825,7 +924,7 @@
 .previewActionRow {
   display: flex;
   gap: 8px;
-  border-top: 1px solid rgba(255,255,255,0.05);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
   padding-top: 12px;
   margin-top: 5px;
   font-family: 'Inter', sans-serif;
@@ -895,7 +994,7 @@
   border-radius: 50%;
   background: #ffffff;
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(0,0,0,0.5);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
   transition: all 0.2s ease;
 }
 
@@ -936,13 +1035,27 @@
 }
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Custom Confirmation Modal Overlay */
@@ -1009,8 +1122,13 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /* Redesigned Telemetry Styles */
@@ -1059,8 +1177,13 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .telemetryGrid {
@@ -1200,7 +1323,9 @@
 }
 
 @keyframes blinkCursor {
-  to { visibility: hidden; }
+  to {
+    visibility: hidden;
+  }
 }
 
 /* Theme Toggle Button Style */
@@ -1238,7 +1363,7 @@
 /* LIGHT THEME OVERRIDES */
 .lightTheme {
   background-color: #030303;
-  background-image: 
+  background-image:
     linear-gradient(rgba(220, 38, 38, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(220, 38, 38, 0.02) 1px, transparent 1px);
   color: #e2e8f0;
@@ -1488,7 +1613,8 @@
   background: rgba(8, 8, 12, 0.95);
 }
 
-.lightTheme .projectItem:hover, .lightTheme .projectItemSelected {
+.lightTheme .projectItem:hover,
+.lightTheme .projectItemSelected {
   border-color: #dc2626;
   box-shadow: 0 0 12px rgba(220, 38, 38, 0.2);
   background: rgba(220, 38, 38, 0.05);
@@ -1822,8 +1948,15 @@
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 .messageViewer {
@@ -2049,7 +2182,9 @@
   transform: translateY(-2px);
 }
 
-.projectGridGridItemSelected, .projectGridItemActive, .projectGridItemSelected {
+.projectGridGridItemSelected,
+.projectGridItemActive,
+.projectGridItemSelected {
   border-color: #00f5ff !important;
   box-shadow: 0 0 15px rgba(0, 245, 255, 0.15);
   background: rgba(0, 245, 255, 0.04) !important;
@@ -2395,11 +2530,14 @@
 }
 
 @keyframes pulseRedKey {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(0.95);
     opacity: 0.6;
     box-shadow: 0 0 8px #ff3b7e;
   }
+
   50% {
     transform: scale(1.15);
     opacity: 1;
@@ -2579,6 +2717,3 @@
 .lightTheme .previewSkillItem .gaugeValue {
   color: #ffffff;
 }
-
-
-

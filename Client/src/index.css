@@ -218,3 +218,37 @@ body.admin-mode textarea {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+/* Global responsive adjustments for all section headers and titles */
+@media (max-width: 768px) {
+  .section-header {
+    margin-bottom: 40px;
+  }
+
+  .section-title {
+    font-size: 1.85rem;
+    letter-spacing: 0.5px;
+    line-height: 1.25;
+  }
+
+  .section-subtitle {
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-header {
+    margin-bottom: 30px;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+    letter-spacing: 0.5px;
+  }
+
+  .section-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+  }
+}

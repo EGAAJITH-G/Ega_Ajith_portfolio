@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Phone, MapPin, Send, Briefcase } from 'lucide-react';
 import { playClickSound, playTypeSound } from '../../utils/soundUtils';
@@ -17,10 +17,29 @@ const WhatsappIcon = ({ size = 15, className, style }) => (
   </svg>
 );
 
+const LinkedinIcon = ({ size = 15, className, style }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} style={{ flexShrink: 0, ...style }}>
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+    <rect width="4" height="12" x="2" y="9"/>
+    <circle cx="4" cy="4" r="2"/>
+  </svg>
+);
+
 const Contact = () => {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Monitor resize for mobile-only LinkedIn button layout
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleInputChange = (e) => {
     playTypeSound();
@@ -149,6 +168,16 @@ const Contact = () => {
               >
                 <WhatsappIcon size={14} style={{ marginRight: '6px' }} /> WhatsApp
               </a>
+              {isMobile && (
+                <a 
+                  href="https://www.linkedin.com/in/ega-ajith-g2004/" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className={`${styles.meetBtn} ${styles.linkedinBtn} cyber-button`}
+                >
+                  <LinkedinIcon size={14} style={{ marginRight: '6px' }} /> LinkedIn
+                </a>
+              )}
               <a 
                 href="https://github.com/EGAAJITH-G" 
                 target="_blank" 

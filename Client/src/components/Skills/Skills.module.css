@@ -453,6 +453,21 @@
   .skillsActiveWrapper {
     grid-template-columns: 1fr;
   }
+
+  .competencyCloud {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    height: auto;
+  }
+
+  .competencyBadge {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    justify-content: flex-start;
+    height: 100%;
+    box-sizing: border-box;
+  }
 }
 
 @media (max-width: 480px) {
@@ -479,4 +494,54 @@
   .circularGaugeContainer {
     align-self: flex-end;
   }
+
+  .competencyCloud {
+    gap: 8px;
+  }
+
+  .competencyBadge {
+    padding: 6px 8px;
+    font-size: 0.68rem;
+    gap: 4px;
+  }
+}
+
+.apiOfflineMessage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 20px;
+  background: rgba(255, 26, 26, 0.03);
+  border: 1.5px dashed rgba(255, 26, 26, 0.2);
+  border-radius: 16px;
+  gap: 15px;
+  box-shadow: 0 0 20px rgba(255, 26, 26, 0.05);
+  margin: 30px auto;
+  max-width: 600px;
+  width: 100%;
+}
+
+.errorIcon {
+  color: #ff3b7e;
+  filter: drop-shadow(0 0 5px rgba(255, 59, 126, 0.5));
+}
+
+.errorTitle {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.85rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #ff3b7e;
+  text-shadow: 0 0 10px rgba(255, 59, 126, 0.2);
+}
+
+.errorDescription {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
 }

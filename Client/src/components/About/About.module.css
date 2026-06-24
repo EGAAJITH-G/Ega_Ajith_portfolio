@@ -189,6 +189,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -276,12 +277,10 @@
   left: -50%;
   width: 200%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 26, 26, 0) 0%,
-    rgba(255, 26, 26, 0.15) 50%,
-    rgba(255, 26, 26, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 26, 26, 0) 0%,
+      rgba(255, 26, 26, 0.15) 50%,
+      rgba(255, 26, 26, 0) 100%);
   transform: skewX(-25deg);
   transition: 0.75s;
   opacity: 0;
@@ -382,7 +381,10 @@
   transform: scale(1.1);
 }
 
-.blueGlow, .purpleGlow, .greenGlow, .amberGlow {
+.blueGlow,
+.purpleGlow,
+.greenGlow,
+.amberGlow {
   background: rgba(255, 26, 26, 0.08);
   color: var(--accent-red);
 }

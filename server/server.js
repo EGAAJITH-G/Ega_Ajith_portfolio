@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import compression from 'compression';
 
 // Import Routes
 import authRoutes from './routes/auth.js';
@@ -10,6 +11,7 @@ import projectRoutes from './routes/projects.js';
 import certificationRoutes from './routes/certifications.js';
 import skillRoutes from './routes/skills.js';
 import analyticsRoutes from './routes/analytics.js';
+import { sendTelegramAlert } from './services/telegramService.js';
 
 dotenv.config();
 
@@ -28,12 +30,18 @@ const logToErrorLedger = (message, stack, path, method) => {
   if (global.systemErrorLedger.length > 20) {
     global.systemErrorLedger = global.systemErrorLedger.slice(0, 20);
   }
+  
+  // Forward to mobile via Telegram Bot
+  sendTelegramAlert(errorEntry).catch(err => {
+    console.error('[TELEGRAM FORWARD FAILED]', err.message);
+  });
 };
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+app.use(compression());
 app.use(cors());
 app.use(express.json({ limit: '10mb' })); // Support base64 image uploads up to 10mb
 
@@ -80,6 +88,18 @@ app.get('/api/status', (req, res) => {
     version: '1.0.0'
   });
 });
+
+// Temporary Telegram Test Endpoint
+app.get('/api/test-telegram', (req, res) => {
+  logToErrorLedger(
+    'Test Alert: Telegram Telemetry System Check Successful!',
+    'Mock error stack trace at test-telegram endpoint. All alert nodes operational.',
+    '/api/test-telegram',
+    'GET'
+  );
+  res.json({ message: 'Telegram test alert triggered!' });
+});
+
 
 // Global Error Handler
 app.use((err, req, res, next) => {

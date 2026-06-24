@@ -23,7 +23,8 @@ const initialProjects = [
     forks: 12,
     language: "TypeScript 82%",
     subtitle: "Flower Shop / README.md",
-    header: "Premium Flower Shop E-commerce"
+    header: "Premium Flower Shop E-commerce",
+    appType: "Web Application"
   },
   {
     title: "Vetri Flex",
@@ -38,7 +39,8 @@ const initialProjects = [
     forks: 8,
     language: "JavaScript 95%",
     subtitle: "Vetri Flex / README.md",
-    header: "Premium Streaming Platform Interface"
+    header: "Premium Streaming Platform Interface",
+    appType: "Web Application"
   },
   {
     title: "MERN Ecommerce",
@@ -53,7 +55,8 @@ const initialProjects = [
     forks: 15,
     language: "JavaScript 76%",
     subtitle: "MERN Ecommerce / README.md",
-    header: "Full Stack MERN Shopping App"
+    header: "Full Stack MERN Shopping App",
+    appType: "Web Application"
   },
   {
     title: "AI Portfolio",
@@ -68,7 +71,8 @@ const initialProjects = [
     forks: 18,
     language: "CSS 45%",
     subtitle: "AI Portfolio / README.md",
-    header: "Cinematic Developer Portfolio"
+    header: "Cinematic Developer Portfolio",
+    appType: "Web Application"
   },
   {
     title: "SaaS Landing Page",
@@ -83,7 +87,8 @@ const initialProjects = [
     forks: 2,
     language: "JavaScript 100%",
     subtitle: "SaaS Landing Page / README.md",
-    header: "SaaS Landing Page Interface"
+    header: "SaaS Landing Page Interface",
+    appType: "Web Application"
   },
   {
     title: "Realtime Chat Console",
@@ -98,7 +103,8 @@ const initialProjects = [
     forks: 5,
     language: "JavaScript 88%",
     subtitle: "Realtime Chat Console / README.md",
-    header: "WebSockets Instant Messaging App"
+    header: "WebSockets Instant Messaging App",
+    appType: "Web Application"
   }
 ];
 

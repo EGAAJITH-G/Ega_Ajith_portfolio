@@ -30,7 +30,10 @@ router.post('/', auth, async (req, res) => {
     forks,
     language,
     subtitle,
-    header
+    header,
+    appType,
+    workingStatus,
+    imageAlign
   } = req.body;
 
   if (!title || !desc) {
@@ -61,7 +64,10 @@ router.post('/', auth, async (req, res) => {
       forks: forks || 0,
       language: language || '',
       subtitle: subtitle || '',
-      header: header || ''
+      header: header || '',
+      appType: appType || '',
+      workingStatus: workingStatus || '',
+      imageAlign: imageAlign || 'top'
     });
 
     await newProject.save();

@@ -54,6 +54,20 @@ const projectSchema = new mongoose.Schema({
   header: {
     type: String,
     default: ''
+  },
+  appType: {
+    type: String,
+    default: ''
+  },
+  workingStatus: {
+    type: String,
+    enum: ['', 'Live Project', 'Current Project', 'Finished Project'],
+    default: ''
+  },
+  imageAlign: {
+    type: String,
+    enum: ['top', 'right'],
+    default: 'top'
   }
 }, { timestamps: true });
 

@@ -194,3 +194,65 @@
     opacity: 0.2;
   }
 }
+
+@media (max-width: 768px) {
+  .processContainer :global(.section-title) {
+    font-size: 1.85rem;
+    letter-spacing: 0.5px;
+    line-height: 1.25;
+  }
+
+  .processContainer :global(.section-subtitle) {
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+  }
+
+  .stepsFlow {
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .stepCard {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    width: 100%;
+    max-width: 480px;
+    padding: 16px 20px;
+    gap: 16px;
+  }
+
+  .iconWrapper {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+  }
+
+  .stepBadge {
+    top: 12px;
+    right: 16px;
+    font-size: 0.7rem;
+  }
+
+  .stepTitle {
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .stepDesc {
+    font-size: 0.75rem;
+    line-height: 1.4;
+  }
+
+  .connectorLine {
+    width: 2px;
+    height: 28px;
+    min-height: 28px;
+    margin: 4px 0;
+    background: linear-gradient(to bottom, rgba(255, 26, 26, 0.4), rgba(102, 0, 0, 0.2));
+  }
+}
